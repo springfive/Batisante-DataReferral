@@ -1,0 +1,89 @@
+<apex:page applyBodyTag="false" label="Prestation Resiliation PDF" standardController="Prestation__c" extensions="prestationExtension" renderAs="pdf">
+    <head>
+        <title>{! Prestation__c.Libell__c } - Résiliation</title>
+        <style>
+            @page {
+              margin: 1.0in !important;
+            
+              @bottom-center
+              {
+                content : element(bottom-center-div);
+              }
+            }
+            bold {
+              font-weight: bold;
+            }
+            italic {
+              font-style: italic;
+            }
+            underline {
+              text-decoration: underline;
+            }
+            .bottom-center-div
+            {
+              position: running(bottom-center-div);             
+              height: 60px;
+            }
+        </style>
+    </head>
+    <body style="{! AttestationPoliceSize }">
+        <apex:outputPanel rendered="{! AttestationType=='Non Concerné' }">
+            Cette prestation ne requière pas que le client envoie une demande de résiliation auprès de son prestataire actuel pour lui signifier la fin de leur collaboration. Ce document est donc inutile.
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! AttestationType!='Non Concerné' }">
+			<table width="100%">
+            	<tr>
+                	<td>
+                    	<table align="right" width="40%">
+                        	<tr>
+                				<td>
+                                	{! CompetitorName }<br/><br/>
+                   					{! CompetitorAdress[0] }<br/>
+                    				{! CompetitorAdress[1] }<br/>
+                				</td>
+            				</tr>
+                    	</table>
+                	</td>
+            	</tr>
+        	</table>
+        	<table width="100%" style="padding-top:50px;line-height:2;">
+            	<tr>
+                	<td>
+                    	Le <apex:outputText value="{0,date, dd'/'MM'/'yyyy}"><apex:param value="{! TODAY() }" /></apex:outputText><br/>
+                    	<italic style="font-weight:bold;text-decoration:underline">Recommandée avec A. R.</italic><br/>
+                    	<bold><span style="text-decoration:underline;padding-right:25px;">OBJET :</span> Résiliation contrat - {! AttestationType } - </bold>{! CompletePrestaName }<br/>
+                    	<bold>IMMEUBLE : </bold><apex:outputText value="{!DevisInfos[1]}" escape="false" />
+               		</td>
+            	</tr>
+        	</table>
+        	<table width="100%" style="padding-top:80px;">
+            	<tr>
+                	<td>
+                    	<apex:outputPanel rendered="{! AttestationType=='A échéance' }">
+                    		Madame, Monsieur,<br/><br/>
+                    		Nous vous prions de trouver par la présente la dénonciation du contrat <bold>{! CompletePrestaName }</bold> concernant l'immeuble ci- dessus mentionné à compter de sa prochaine échéance et au plus tard le 31/12/<apex:outputText value="{0,date,yyyy}"><apex:param value="{! TODAY() }" /></apex:outputText>.<br/><br/>
+                    		Nous vous prions de bien vouloir accuser réception de ce courrier.<br/><br/>
+                    		Dans l'attente, recevez, Messieurs, l'expression de nos salutations distinguées.<br/>
+                    	</apex:outputPanel>
+                    	<apex:outputPanel rendered="{! AttestationType=='Loi chatel' }">
+                            Madame, Monsieur,<br/><br/>
+                            En notre qualité de représentant du syndicat des copropriétaires de l’immeuble cité en référence et pour le compte de ce dernier nous avons conclu avec votre société un contrat {! CompletePrestaName }.<br/><br/>
+                            Or, le syndicat des copropriétaires souhaite mettre un terme à votre contrat sans délai ni préavis, conformément à l’article L 136-1 modifié par la loi n°2008-3 du 3 janvier 2008 dite Loi Chatel du Code de la Consommation.<br/><br/>
+                            En effet, vous n’êtes pas sans savoir que l’article 136-1 du Code de la Consommation précise que « Le professionnel prestataire de services informe le consommateur par écrit (...), au plus tôt 3 mois et au plus tard 1 mois avant le terme de la période autorisant le rejet de la reconduction, de la possibilité de ne pas reconduire le contrat qu’il a conclu avec une clause de reconduction tacite (…).  Lorsque cette information ne lui pas été adressée conformément aux dispositions du premier alinéa, le consommateur peut mettre gratuitement un terme au contrat à tout moment, à compter de la date de reconduction. Les avances effectuées après la dernière date de reconduction ou s’agissant des contrats à durée indéterminée, après la date de transformation du contrat initial à durée déterminée, sont dans ce cas remboursées dans un délai de 30 jours à compter de la date de résiliation, déduction faite des sommes correspondant, jusqu’à celle-ci, à l’exécution du contrat. A défaut de remboursement dans les conditions prévues ci-dessus, les sommes dues sont productives d’intérêt au taux légal. »<br/><br/>
+                            Au vu de ce qui précède, il apparaît que vous n’avez pas respecté votre obligation d’information concernant le droit du syndicat des copropriétaires à mettre fin au contrat dans les délais précisés.<br/><br/>
+                            Aussi, nous vous demandons de prendre acte de la résiliation à effet immédiat de ce contrat et vous remercions de bien vouloir nous accuser réception de ce courrier.<br/><br/>
+                            Recevez, Madame, Monsieur, l’expression de nos sincères salutations.<br/>
+                        </apex:outputPanel>
+                	</td>
+            	</tr>
+        	</table>
+        	<table width="100%" style="padding-top:65px">
+            	<tr>
+                	<td align="right">
+                    	Le Gestionnaire {! ContactName }
+                	</td>
+            	</tr>
+        	</table>
+        </apex:outputPanel>
+    </body>
+</apex:page>

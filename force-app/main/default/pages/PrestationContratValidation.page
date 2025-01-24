@@ -1,0 +1,6 @@
+<apex:page standardController="Prestation__c" extensions="prestationExtension" action="{!initCheck}" label="Contrat PDF">
+  <apex:form style="text-align: center;">
+      Le paramètre de lot "{! lotEmpty }" est à 0. Êtes-vous sûr qu’il ne manque pas cet élément pour chiffrer l’offre ?<br/>
+    <apex:commandButton action="{!confirmContract}" value="Oui" id="confirmContractButton"/> &nbsp;&nbsp; <apex:outputLink value="/{!prestationId}">Annuler</apex:outputLink>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,88 @@
+<apex:page applyBodyTag="false" label="Prestation TVA PDF" standardController="Prestation__c" extensions="prestationExtension" renderAs="pdf">
+    <head>
+        <title>{! Prestation__c.Libell__c } - Résiliation</title>
+        <style>
+            @page {
+              margin: 0.6in !important;
+            
+              @bottom-center
+              {
+                content : element(bottom-center-div);
+              }
+            }
+            bold {
+              font-weight: bold;
+            }
+            italic {
+              font-style: italic;
+            }
+            underline {
+              text-decoration: underline;
+            }
+            padding125 {
+              padding-left: 125px;
+            }
+            padding25 {
+              padding-left : 25px;
+            }
+            paddingleft70 {
+              padding-left: 70px;
+            }
+            .bottom-center-div
+            {
+              position: running(bottom-center-div);             
+              height: 60px;
+            }
+        </style>
+    </head>
+    <body>
+        <apex:outputPanel rendered="{! !TvaAttestation }">
+            Cette prestation ne requière pas d'attestation de TVA. Ce document est donc inutile.
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! !SiteAdresseAvailable }">
+            La proposition reliée à la prestation pour laquelle vous souhaitez générer cette attestation ne possède pas d'adresse. Merci de corriger ce point avant de tenter de générer à nouveau une cette attestation de TVA.
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! !CompagnyAdressAvailable }">
+            La proposition reliée à la prestation pour laquelle vous souhaitez générer cette attestation ne possède pas d'adresse pour l'entreprise. Merci de corriger ce point avant de tenter de générer à nouveau une cette attestation de TVA.
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! TvaAttestation && SiteAdresseAvailable && CompagnyAdressAvailable}">
+            <table align="center" width="100%" style="police-size:10.5px;padding-top:75px">
+                <tr>
+                	<td align="center" style="">
+                        ATTESTATION<br/>
+                        POUR LES TRAVAUX REALISES SUR LES PARTIES COMMUNES<br/>
+                        D'UN  IMMEUBLE COLLECTIF<br/>
+                    </td>
+                </tr>
+            </table>
+            <table style="padding-top:150px;police-size:10.5px" width="95%" align="center">
+                <tr>
+                    <td align="left">
+                        Je soussigné<br/><br/><br/><br/>
+                    </td>
+                    <td width="60%" align="left">
+                        {! CompagnyName }<br/>
+                        <apex:outputText value="{! CompagnyAdress}" style="white-space:pre;" escape="false"/><br/>
+                    </td>
+                </tr>
+            </table>
+            <table width="95%" align="center" style="padding-top:40px;police-size:10.5px">
+                <tr>
+                    <td width="100%" align="left">
+                        atteste que l'immeuble situé :<br/><br/><br/>
+                        <apex:outputText value="{! SiteAdress }" style="white-space:pre;" escape="false"/><br/><br/><br/>
+                        dont je suis le représentant, est achevé depuis plus de deux ans et est composé de locaux affectés principalement ou exclusivement à l'habitation, dans une proportion de plus de 50% des millièmes de l'immeuble. (1)
+                    </td>
+                </tr>
+            </table>
+            <table width="100%" style="padding-top:185px;police-size:10.25px">
+                <tr>
+                    <td align="center" >
+                        (1) Par local affecté principalement à l'habitation, il convient d'entendre ceux qui, bien qu'affectés en partie à un usage professionnel, sont utilisés pour plus de 50% de leur superficie à un usage d'habitation.
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        
+    </body>
+</apex:page>

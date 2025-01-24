@@ -1,0 +1,307 @@
+<apex:page applyBodyTag="false" label="Prestation PDF" standardController="Prestation__c" extensions="prestationExtension" renderAs="pdf">
+    <head>
+        <title>Prestation Contrat PDF</title>
+        <style>
+        	@page {
+            	margin-top: 0.25in !important;
+				margin-bottom: 0in !important;
+            	margin-left: 0.3in !important;
+            	margin-right: 0.3in !important;
+            	
+            }
+            @page :first {
+            margin-bottom: 0.95in !important;
+                @bottom-center
+                {
+                	content : element(bottom-center-div);
+                }
+            }
+            body {
+            	font-size: 13px;
+            }
+            bold {
+            	font-weight: bold;
+            }
+            italic {
+            	font-style: italic;
+            }
+            underline {
+            	text-decoration: underline;
+            }
+            padding125 {
+            	padding-left: 125px;
+            }
+            padding25 {
+            	padding-left : 25px;
+            }
+            paddingleft70 {
+            	padding-left: 70px;
+            }
+            .bottom-center-div
+            {
+            	position: running(bottom-center-div);             
+            	height: 60px;
+            }
+           .blue_title {
+            	color: #3788E3;
+            	font-weight: bold;
+            	padding-bottom: 10px;
+            	padding-top: 10px;
+            }
+            
+            .nota {
+            	color: red;
+            
+            }
+            .paragraph {
+            	padding-bottom: 15px;
+            
+            }
+            
+            .blue_array {
+            
+            	border-collapse: collapse;
+            	margin-bottom: 15px;
+            	margin-left: 10px;
+            }
+            .blue_array th {
+            	background-color: #3788E3;
+                color: white;
+             	padding: 15px;
+            }
+            .blue_array td {
+            	border: solid #3788E3 1px;
+             	padding: 15px;
+            }
+
+            
+            .art4_array {
+            	border-collapse: collapse;
+            }
+            .art4_array td {         
+            	border: solid black 1px;
+             	padding: 5px;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <apex:outputPanel rendered="{! (MissingInfos != '') }">
+            <br /> {! MissingInfos }<br />
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! LotsQuantity==0}">
+            <br />Aucune valeur n’est indiquée dans le/les champs {! ChiffrageNameBlocage }.<br/>Merci de saisir une valeur supérieure à 0 puis régénérer le document.<br/>
+        </apex:outputPanel>
+        <div style="page-break-after:avoid">
+       		
+           
+        	<apex:outputPanel rendered="{! (MissingInfos == '') && (LotsQuantity != 0) }">
+            	<div  style="page-break-after:always;">
+       
+            		<apex:outputPanel >
+              
+            			<c:PrestationContratHeader Canceled="{! Canceled }" Title="{! Title }" InstallPrice="{! InstallPrice }"
+             			 	       	                  	  PoliceSize="{! PoliceSize }" CodeDict="{! CodeDict }" 
+                            		                      PrestaProposition="{! PrestaProposition }" DevisInfos="{! DevisInfos }" 
+                                                   		  Pole="{! Pole }"/>
+                			<table width="100%">
+                    			<tr>
+                                    <td class='blue_title'>
+                                        Art. I – CONTRACTANTS
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <bold>SYNDICAT DES COPROPRIETAIRES DU :</bold><br />
+                                        <apex:outputText value="{!DevisInfos[1]}" escape="false" />
+                                        <table align="right">
+                                            <tr>
+                                                <td>
+                                                    <bold>REPRESENTE PAR :</bold><br />
+                                                    {! DevisInfos[2] }<br />
+                                                    {! DevisInfos[3] }
+                                                   
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                  			<table width="100%">
+                                <tr>
+                                    <td class='blue_title'>
+                                        Art. II - PRESTATIONS
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                      <apex:outputText value="{!PrestationArray}" escape="false" />  
+                                    </td>
+                                </tr>
+                            </table>
+                              <table width="100%">
+                                <tr>
+                                    <td class='blue_title'>
+                                        Art. III – LISTE DES INSTALLATIONS – DETAIL DE LA PRESTATION
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                      <apex:outputText value="{!InstallationArray}" escape="false" />  
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                         <apex:outputPanel rendered="{! Title == 'ASSAINISSEMENT' }">
+                                            <bold>IMPORTANT : le curage des réseaux enterrés et des grilles, siphons, avaloirs, regards,... les desservant n’est pas compris
+            dans notre proposition.</bold>
+                                        </apex:outputPanel>
+                                    </td>  
+                                </tr>
+                            </table>
+                			<table width="100%" class="bottom-center-div">
+                                <tr>
+                                    <td align="center">
+                                        <apex:image id="footerVoltair" height="60" url="{!$Label.Voltair_Footer}" alt="Footer" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </apex:outputPanel>
+           
+        			</div>
+        			<div>
+                        <apex:outputPanel >
+                             <table width="100%">
+                                <tr>
+                                    <td class='blue_title' style="margin-bottom: 5px">
+                                       Art. IV - PRESCRIPTIONS TECHNIQUES – METHODOLOGIES
+                                    </td>
+                                </tr>
+                              <!--	<tr>
+                                    <td style="padding-left: 25px; padding-bottom: 15px">
+                                      
+                                    </td>
+                                 </tr>-->
+                                 <tr>
+                                    <td>
+                                        <apex:outputPanel rendered="{! Title == 'ASSAINISSEMENT' }">
+                                            <c:PrestaPDF_Art4_Assainissement ></c:PrestaPDF_Art4_Assainissement>
+                                        </apex:outputPanel>
+                                         <apex:outputPanel rendered="{! Title == 'INSTALLATIONS AERAULIQUES' }">
+                                            <c:PrestaPDF_Art4_InstallsAerau ></c:PrestaPDF_Art4_InstallsAerau>
+                                        </apex:outputPanel>
+                                    </td>
+                                 </tr>
+                            </table>
+                            <table width="100%">
+                                <tr>
+                                    <td class='blue_title'>
+                                       Art. V – CLAUSES TECHNIQUES PARTICULIERES
+                                    </td>
+                                </tr>
+                             </table>
+                                    
+                        </apex:outputPanel>
+                    </div>
+                    <div style="page-break-inside:avoid;">
+                    <apex:outputPanel >
+                        <table width="100%">
+                            <tr>
+                                <td class='blue_title'>
+                                       Art. VI – PRIX (OFFRE COMMERCIALE VALABLE 6 MOIS) – REGLEMENT - ACTUALISATION
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='padding-left: 15px;padding-bottom:5px; padding-right: 30px' ><bold><span style='padding-right: 20px'>Montant de la prime annuelle H.T Euros :</span>{!PassagePrice}€</bold></td>
+                            </tr>
+                             <tr>
+                                 
+                                <td style='padding-left: 15px;padding-bottom:5px; padding-right: 30px' >
+                                    <apex:outputPanel rendered="{! InstallPrice != 0}"><bold>
+                                        <span style='padding-right: 20px'>Montant du coût matériel H.T Euros :</span> {!InstallPrice}€
+                                    </bold></apex:outputPanel>
+                                 </td>
+                            </tr>
+                            <tr>
+                                <td class="nota"><em><bold>Nota : pour bénéficier du taux de TVA à 10%, vous devez justifier par une attestation sur l'honneur que votre habitation a plus de 2 années de construction (voir modèle joint).<br /></bold></em></td>
+                            </tr>
+                            <tr>
+                                <td> 
+                                    <div class="paragraph">
+                                        Ces prix sont indexés en fonction de l’indice et de la formule d’actualisation en vigueur à la date de signature (CF ARTICLE 9 des conditions générales de vente). Ces montants sont forfaitaires et dus quelque soit le nombre de locaux ou installations non traités par refus, inaccessibilité ou absence
+                                    </div>
+                                    <div class="paragraph">
+                                        <bold style='padding-right: 30px'>Délai de règlement :</bold> Payable à 30 jours net de facturation à raison d’une facture après chaque intervention. Les frais annexes (fourniture de matériels, frais de décharge ou de retraitement, ...) feront l’objet d’une facturation complémentaire      
+                                    </div>
+                                   <div class="paragraph">
+                                       
+                                       <bold style="padding-right: 30px">Mode de règlement :</bold>
+                                       <span style="border: solid 1px black;">&nbsp;&nbsp;&nbsp;&nbsp;</span> <span style="padding-right: 30px"> Chèque</span>
+                                        <span style="border: solid 1px black;">&nbsp;&nbsp;&nbsp;&nbsp;</span> <span style="padding-right: 30px"> Virement</span>
+                                       <span style="border: solid 1px black;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="padding-right: 30px">   Autre (préciser) :</span>
+                                          
+                                    </div>
+                                    <div>
+                                        <bold>IMPORTANT :</bold> Les frais de retraitement des boues de pompage seront facturés en sus du montant ci-dessus désigné si la prestation
+            le nécessite.
+                                    </div>
+                                </td>
+                            </tr>
+                          </table>
+                        <table width="100%">
+                            <tr>
+                                <td class='blue_title'>
+                                      Art. VII – DATE D'EFFET, DUREE ET RESILIATION DU CONTRAT
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="paragraph">
+                                        Le présent contrat prend effet à sa signature sauf stipulation expresse précisée dans l’article II.<br />
+                                        A l’échéance de la première période contractuelle définie à l’article 2, l’engagement sera renouvelable par tacite reconduction pour une période de même durée, sauf préavis réciproque donné par courrier recommandé AR trois mois avant son expiration.
+                                    </div>
+                                    <div class="paragraph">
+                                        Fait en deux exemplaires originaux dont nous vous demandons de nous retourner l’exemplaire fournisseur revêtu de votre signature et de votre cachet commercial après avoir pris connaissance des conditions générales de vente , qui font partie intégrante du contrat, et les avoir acceptées sans réserves.
+                                    </div>
+                                    <div style="font-size: 11px; margin-bottom: 5px">
+                                        Le Client ou son représentant légal, le cas échéant, doit s’assurer que le Prestataire aura un accès aux locaux afin de pouvoir assurer sa prestation et autorise expressément le Prestataire à utiliser tout passe universel lui permettant d’accéder au(x) lieu(x) visé(s).
+                                    </div>
+                                     
+                                     <table style="margin-bottom: 10px">
+                                            <tr>
+                                                <td  height="5" width="7" style="border: solid 2px black;"></td>
+                                                <td style="line-height: 0.9; padding-left:5px; font-size: 11px">
+                                                    * Je renonce expressément à l’exercice du droit de rétraction dont je bénéficie en vertu de l’article L 121-21 du Code de la Consommation.
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="line-height: 0.9; font-size: 11px ">* merci de cocher cette case, à défaut nous respecterons un délai minimum de 14 jours pour exécuter votre commande</td>
+                                            </tr>
+                                    </table>
+                                    <table width='100%'>
+                                            <tr>
+                                                <td width="50%" valign="top">
+                                                    Neuilly Plaisance, le :  {! DAY(TODAY()) }/{! MONTH(TODAY()) }/{! YEAR(TODAY()) }<br />
+                                                     <apex:image style="width:150px;" id="tamponVoltair" url="{!$Label.Tampon_Voltair}" alt="Tampon Signé" />
+                          
+                                                </td>
+                                                <td valign='top'>
+                                                    <bold> 
+                                                        {! DevisInfos[2] }<br />
+                                                        Bon pour accord <br />
+                                                    </bold>
+                                                    (Date-cachet-signature)
+                                                </td>
+                                            </tr>
+                                        </table>         
+                                </td>
+                            </tr>
+                        </table>
+                        </apex:outputPanel>
+            		</div>
+        	</apex:outputPanel>
+            
+       
+        </div>
+    </body>
+</apex:page>

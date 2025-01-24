@@ -1,0 +1,23 @@
+<apex:page standardController="Lead" extensions="EnrichCompaniesDatas">
+    <apex:form >
+    	<apex:pageBlock title="Selectionnez les valeurs à conserver">
+             <apex:pageBlockTable value="{!Fields}" var="field">
+                <apex:column headerValue="Champs" value="{!field[0]}"/>  
+                <apex:column headerValue="Valeur actuelle" value="{!field[1]}"/>
+                <apex:column headerValue="Valeur de remplacement" value="{!field[2]}"/>
+                 
+              
+             <!--   <apex:column >
+                    
+					<apex:inputCheckbox value="{!changeName}"/>
+        		                   
+                </apex:column>-->
+            </apex:pageBlockTable>
+    	</apex:pageBlock>
+        <apex:commandButton value="Mettre à jour" action="{!updateCompanyInfoFromSiret}"/>
+        
+        <apex:commandButton value="Annuler" action="{!Cancel}"/>
+       
+    </apex:form>
+    
+</apex:page>

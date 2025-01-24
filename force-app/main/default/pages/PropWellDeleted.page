@@ -1,0 +1,3 @@
+<apex:page standardController="BS_Devis_from_Lead__c" extensions="deletePropositionExt">
+  La proposition a bien été supprimée.
+</apex:page>

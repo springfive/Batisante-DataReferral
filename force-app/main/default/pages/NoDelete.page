@@ -1,0 +1,7 @@
+<apex:page standardController="BS_Devis_from_Lead__c" extensions="deletePropositionExt">
+    Vous ne pouvez pas supprimer de proposition n'ayant plus le status "Brouillon", contactez votre manager si vous voulez tout de même supprimer cette proposition.<br /><br />
+   
+    <apex:outputLink value="/{! propId }">
+        Revenir à la proposition
+    </apex:outputLink>
+</apex:page>

@@ -1,0 +1,5 @@
+<apex:page >
+    <p>
+        You first need to generate the devis!
+    </p>
+</apex:page>

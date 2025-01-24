@@ -1,0 +1,8 @@
+<apex:page standardController="Lead" extensions="EnrichCompaniesDatas">
+    <apex:outputText >Votre prospect n'a pas été mis à jour<br /></apex:outputText>
+        <apex:form >
+        <apex:outputLink value="/{! LeadId }">
+  				Revenir au prospect
+        </apex:outputLink>
+    </apex:form>
+</apex:page>

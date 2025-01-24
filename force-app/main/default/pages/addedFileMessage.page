@@ -1,0 +1,8 @@
+<apex:page standardController="BS_Devis_from_Lead__c" extensions="saveDevisPDF" lightningStylesheets="true" >
+    Votre Devis PDF a bien été ajouté aux fichiers associés de l'enregistrement.
+    <apex:form >
+        <apex:outputLink value="/{! devisId }">
+  				Revenir à devis - Prospect
+        </apex:outputLink>
+    </apex:form>
+</apex:page>

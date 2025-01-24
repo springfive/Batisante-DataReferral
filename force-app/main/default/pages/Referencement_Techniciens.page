@@ -1,0 +1,315 @@
+<apex:page contentType="application/pdf" standardController="Account">
+
+    <p style="color:green;font-size: large;text-align:center"><strong>FICHE RENSEIGNEMENT</strong></p>
+<br/>
+<p>Raison Sociale  ________________________________________________________________</p>
+<br/>
+<p>Adresse         ________________________________________________________________</p>
+<br/>
+<p>CP              __________________        Ville    _____________________________</p>
+<br/>
+<p>Téléphone :     __________________  Portable              ______________________</p>
+<br/>
+<p>Adresse mail    ________________________________________________________________</p>
+<br/>
+<p>Secteur d'activité  ____________________________________________________________</p>
+<br/>
+<p>N° SIRET         ___________________    Code APE            ____________________</p>
+<br/>
+<p>Site internet    _______________________________________________________________</p>
+<br/>
+<p>N° TVA           _______________________________________________________________</p>
+<br/>
+<p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span>  Exonéré suivant l'article 293B du CGI</p>
+<br/>
+<p>Service comptabilité          Tél :         ____________________________________</p>
+<br/>
+<p>                              Adresse mail :   _________________________________</p>
+<br/>
+<p>Forme Juridique  ____________________    Capital _______________________________</p>
+<p>Date de création  ____________  Chiffre d'affaires N-1     _____________________</p>
+<p>Effectif administratif     _____________________________________________________</p>
+<p>Effectif Technique   ___________________________________________________________</p>
+<p>Vos 5 clients référence ________________________________________________________</p>
+<br/>
+<br/>
+<br/>
+<br/>
+<p>TARIFS SEMAINE  </p>           
+<p>MAIN D'ŒUVRE   _______________€ HT / heure</p>
+<p>DEPLACEMENT    _______________€ HT / heure</p>
+<p>TARIFS ASTREINTE    <span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span>  OUI    <span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span>  NON</p>
+<br/>
+<p>MAIN D'ŒUVRE   _______________€ HT / heure</p>
+<p>DEPLACEMENT    _______________€ HT / heure</p>
+<br/>
+<br/>
+<br/>
+<p style="color:green;font-size: large;text-align:center"><strong>MAINTENANCE MULTITECHNIQUE</strong></p>
+<p>Merci de cocher les activités ci-dessous, vous concernant :</p>
+<table style="width:100%;border-collapse: collapse;">
+  <tbody>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Menuiserie</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Mobilier</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Serrurerie fermeture</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Electricité</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Curage hydrocurage</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Sécurité incendie</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Chauffage</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Informatique</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Alarme</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Peinture</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Courant faible</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Faux plafonds</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Sol souple</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Carrelage</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Macadam</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Climatisation</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Marquage au sol</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Levées de réserves</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Anti-béliers</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Espaces verts</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Nettoyage</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> PMR</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Relooking magasin</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Vitrerie</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Peinture et ravalement</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Rideau métallique</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Chenaux</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Habillage façade</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Zinguerie</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Couverture</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Etanchéité</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Portes automatiques</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> Frigoriste</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+ <p style="color:green;font-size: large;text-align:center"><strong>ZONE GEOGRAPHIQUE D'INTERVENTION</strong></p>
+<table style="width:100%;border-collapse: collapse;">
+  <tbody>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> HAUTS DE FRANCE</strong></p>
+        <p>02 - 59 - 60 - 62 - 80</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> NORMANDIE</strong></p>
+        <p>14 - 27 - 50 - 61 - 76</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> ILE DE FRANCE</strong></p>
+        <p>75 - 77 - 78 -91 - 92 - 93- 94 -95</p>
+      </td>
+      <td style="border: 1px solid black;"></td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> CENTRE VAL-DE-LOIRE</strong></p>
+        <p>18 - 28 - 36 - 37 - 41 - 45</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> BOURGOGNE FRANCHE-COMTE</strong></p>
+        <p>21 - 25 - 39 - 58 - 70 - 71 - 89</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> GRAND-EST</strong></p>
+        <p>08 - 10 - 51 - 52 - 54 - 55 - 57 - 67 - 68 - 88</p>
+      </td>
+      <td style="border: 1px solid black;"></td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> PAYS DE LA LOIRE</strong></p>
+        <p>44 - 49 - 53 - 72 - 85</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> AUVERGNE RHÔNE-ALPES</strong></p>
+        <p>01 - 03 - 07 - 15 - 26 - 38 - 42 - 43 - 63 - 69 - 73 - 74</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> NOUVELLE AQUITAINE</strong></p>
+        <p>16 - 17 - 19 - 23 - 33 - 40 - 47 - 64 - 79 - 86 - 87</p>
+      </td>
+      <td style="border: 1px solid black;"></td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> BRETAGNE</strong></p>
+        <p>22 - 29 - 35 - 56</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> PROVENCE-ALPES COTE D'AZUR</strong></p>
+        <p>04 - 05 - 06 - 13 - 83 - 84</p>
+      </td>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> OCCITANIE</strong></p>
+        <p>09 - 11 - 12 - 30 - 31 - 32 - 34 - 46 - 48 - 65 - 66 - 81 - 82</p>
+      </td>
+      <td style="border: 1px solid black;"></td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <p style="color:green;font-size: large;text-align:center"><strong><span style="border: 1px solid black; width: 20px; height: 20px; display: inline-block;"></span> CORSE</strong></p>
+        <p>2A - 2B</p>
+      </td>
+      <td colspan="3" style="border: 1px solid black;">
+        <p><strong style="color:red">Merci de cocher la région entière ou d'entourer les uniquement les départements concernés</strong></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br/>
+<br/>
+<br/>
+<br/>
+<p style="color:green;font-size: large;text-align:center"><strong>ATTESTATION SUR LE TRAVAIL DISSIMULEE</strong></p>
+<p>Attestation sur l'honneur à souscrire par le cocontractant dans le cadre de la loi sur le travail dissimulé (loi du 11 mars 1997)</p>
+<p>Je soussigné      ________________________________________________________________</p>
+<p>Représentant ( e ) légale ( e ) de la société           ____________________________________</p>
+<p>Située à l'adresse            ________________________________________________________________</p>
+<p>Atteste sur l'honneur être conforme vis-à-vis du droit du travail et ne pas employer de salariés sans les déclarer à l'administration fiscale.</p>
+<p>Fait à                     _______________________      le            _________________________________</p>
+<p>Signature (Nom et qualité du signataire)</p>
+<p>(Tampon de la société obligatoire)</p>
+<br/>
+<br/>
+<br/>
+<p style="color:green;font-size: large;text-align:center"><strong>ATTESTATION DECLARATION FISCALE</strong></p>
+<p>Je soussigné      ________________________________________________________________</p>
+<p>Représentant ( e ) légale ( e ) de la société           ____________________________________</p>
+<p>Située à l'adresse            ________________________________________________________________</p>
+<p>Atteste sur l'honneur que l'ensemble des déclarations fiscales obligatoires à ce jour et au titre de </p>
+<p>L'activité sociale __________________________________________________________________</p>
+<p>Ont été déposées auprès de l'administration fiscale.</p>
+<p>Que tous les travaux/prestations seront réalisés avec des salariés employés régulièrement au regard des articlas L.8211-1 et suivants, L.3243-1 et suivants, R-3243-1 et suivants L1221-10 du Code du Travail dans le cadre du contrat avec</p>
+<p>la société ______________________________________________________________</p>
+<p>Fait à                     _______________________      le            _________________________________</p>
+<p>Prénom + Nom du Dirigeant                                                     Signature du Dirigeant</p>
+<p>(Tampon de la société obligatoire)</p>
+<br/>
+<br/>
+<p style="color:green;font-size: large;text-align:center"><strong>LISTE DES PIECES A FOURNIR</strong></p>
+<ul>
+  <li>Fiche de renseignements complétée et signée</li>
+  <li>Attestation sur le travail dissimulée complétée et signée</li>
+  <li>Extrait K-BIS (datant de moins de 6 mois)</li>
+  <li>Attestation d'assurance responsabilité civile en cours de validité</li>
+  <li>Attestation d'assurance décennale en cours de validité</li>
+  <li>Attestation URSAFF (datant de moins de 6 mois)</li>
+  <li>Attestation de régularité fiscale (datant de moins de 6 mois)</li>
+</ul>
+<br/>
+<p style="color:green;font-size: large;text-align:center"><strong>CONDITIONS GENERALES</strong></p>
+<p>Délai de règlement : 30 jours après réception conforme de votre facture soit :</p>
+<ul>
+  <li>Facture détaillée (nombre d'heures, nombre de techniciens, déplacement, matériel) elle doit reprendre vos tarifs Main d'œuvre et déplacement)</li>
+  <li>Fiche d'intervention dûment complétée et signée par le bénéficiaire des travaux</li>
+  <li>Des photos avant/après intervention</li>
+</ul>
+<br/>
+<p>Document à transmettre à : <a href="mailto:facturation@cmultiserv.com">facturation@cmultiserv.com</a></p>
+<p>Toute facture dont l'échéance est dépassée devra être transmise pour relance à : <a href="mailto:compta.fournisseur@cmultiserv.com">compta.fournisseur@cmultiserv.com</a></p>
+<br/>
+<ul>
+  <li>Le prestataire s'interdit de sous-traiter tout ou partie des opérations confiées par CMultiserv.</li>
+  <li>
+    RSE :
+    <ol>
+      <li>Nombre de véhicules :         __________________________</li>
+      <li>Classe du/des véhicules :   __________________________</li>
+    </ol>
+  </li>
+</ul>
+<br/>
+<p>Nous avons pris connaissance des conditions générales</p>
+<p>Le : ______________________________________        Signature ________________________</p>
+<p>(Tampon de la société obligatoire)</p>
+</apex:page>

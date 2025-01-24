@@ -1,0 +1,249 @@
+<apex:page applyBodyTag="false" label="Devis - Pistes PDF" standardController="BS_Devis_from_Lead__c" extensions="devisLeadExtention,saveDevisPDF" renderAs="pdf">
+    <head>
+        <title>{! BS_Devis_from_Lead__c.Name }</title>
+        <style>
+            .presta-header {
+                background-color: #E4EAF5;
+                text-align: center
+            }
+        </style>
+    </head>
+
+    <body>
+        <table class="main_page" width="800" valign="top">
+            <tr>
+                <td valign="top">
+                    <table valign="top">
+                        <tr>
+                            <td class="HEADER" width="800">
+                                <table width="780">
+                                    <tr>
+                                        <td align="left"> 
+                                            
+                                            <apex:image id="theImage"
+                                                        value="{! IF(BS_Devis_from_Lead__c.P_le__c='Sécurité incendie',
+                                                                   'https://batisante--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0683X00000XAYZy&operationContext=DELIVERY&contentId=05T3X00001mbr45&page=0&d=/a/3X000000yC6z/aoO.XzIMlhJZ.nZb1unRY_LK_Y2oyS7YswI3_mxr8NM&oid=00D3X000002qLoo&dpt=null&viewId=', 
+                                                                   IF(BS_Devis_from_Lead__c.P_le__c='Hygiène',
+                                                                       'https://batisante--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0683X00000XAYZV&operationContext=DELIVERY&contentId=05T3X00001mbr3W&page=0&d=/a/3X000000yC6p/Cz_ZUgGtam5TIoK_1eljvPLpyHp20xNJiAYZrcCUz_E&oid=00D3X000002qLoo&dpt=null&viewId=',
+                                                                       IF(BS_Devis_from_Lead__c.P_le__c='Maintenance réseaux',
+                                                               			 'https://batisante--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0683X00000XAYZo&operationContext=DELIVERY&contentId=05T3X00001mbr3l&page=0&d=/a/3X000000yC74/bzQJa.St1Br8W9z02SP_MsdyRzyB4wPAvs14dduNI6c&oid=00D3X000002qLoo&dpt=null&viewId=', 
+                                                               			  'https://batisante--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0683X00000XAYZV&operationContext=DELIVERY&contentId=05T3X00001mbr3W&page=0&d=/a/3X000000yC6p/Cz_ZUgGtam5TIoK_1eljvPLpyHp20xNJiAYZrcCUz_E&oid=00D3X000002qLoo&dpt=null&viewId=')))}"
+                                                width="250" height="{!imageHeight}" alt="Pôle Logo" />
+                                          
+                                        </td>
+                                        <td align="right" valign="top">
+                                            <table width="400" style="border-collapse: collapse ">
+                                                <tr>
+                                                    <td align="right"
+                                                        style="border-left:solid 1px black; border-top:solid 1px black; background-color: #E4EAF5;">
+                                                        DEVIS N° <b>{! BS_Devis_from_Lead__c.BS_N_Devis__c}</b>
+                                                    </td>
+                                                    <td align="left"
+                                                        style="border-right:solid 1px black; border-top:solid 1px black; background-color: #E4EAF5;">
+                                                        - Date : <b>{! DAY(TODAY()) }/{! MONTH(TODAY()) }/{!
+                                                            YEAR(TODAY()) }</b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="left"
+                                                        style="border-left:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black; ">
+                                                        <span style="color: #999999">Contact</span><br />
+                                                        {! IF(BS_Devis_from_Lead__c.Nom_Soci_t__c!='[non fourni]',BS_Devis_from_Lead__c.Nom_Soci_t__c,'')}<br />
+                                                        {! BS_Devis_from_Lead__c.Contact_Soci_t__c }<br />
+                                                        {! BS_Devis_from_Lead__c.Adresse_Prospect__c }<br />
+                                                        {! IF(refClient, '', 'ref. client:') } {! BS_Devis_from_Lead__c.Ref_Client__c }
+                                                    </td>
+                                                    <td align="left"
+                                                        style="border-right:solid 1px black;border-bottom:solid 1px black;  border-top:solid 1px black;">
+                                                        <span style="color: #999999">Adresse d'intervention</span><br />
+                                                        {! BS_Devis_from_Lead__c.Nom_R_sidence__c }<br />
+                                                      
+                                                        {! BS_Devis_from_Lead__c.Adresse_Site__c }<br />
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="PRESTATIONS" height="580" valign="top">
+                               	<apex:outputpanel rendered="{! (PrestasSize == 0)}">
+                                	<br /> Erreur : Aucune prestation n'a été ajoutée dans l'onglet "Associé" de ce Devis-Prospect.<br /> Ajoutez-en, puis regénérez le document.
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{! (PrestasSize != 0)}">
+                                <table width="85%" >
+                                    <tr>
+                                    	<td width="100%">
+                                           <h1>
+                                                Prestations
+                                            </h1>
+                                                <apex:dataTable width="100%" cellspacing="10" cellpadding="5" border="1"
+                                                    style="border-collapse: collapse" headerClass="presta-header"
+                                                    value="{!Prestas}" var="presta">
+                                                    
+                                                    
+                
+                                                    <apex:column headerValue="Désignation">
+                                                        <a href="{!presta.Dictionnaire_Prestations__r.Lien_vers_description__c}">{!presta.Name}</a>
+                                                    </apex:column> 
+                                                    <apex:column style="text-align:center" value="{!presta.Option__c}"
+                                                        headerValue="Option" />
+                                                    <apex:column style="text-align:center" value="{!presta.Prix_Unitaire_HT__c}" headerValue="Prix HT" />
+                                                    <apex:column style="text-align:left" value="{!presta.Dictionnaire_Prestations__r.Description_courte__c}" headerValue="Description" />
+                                                </apex:dataTable>
+                                        </td>
+                                    </tr>
+                                </table>
+                                
+
+                                <table style="width: 85%;">
+                                   
+                                    <tr>
+                                         <td align="left" style="{! IF(BS_Devis_from_Lead__c.Montant_HT_sans_option__c==BS_Devis_from_Lead__c.Montant_Total_HT_avec_option__c,'display:none','')}">
+                                            <b>
+                                                Total sans options<br />
+                                            </b>
+                                            <table align="left" width="300" style="border-collapse: collapse ">
+                                                <tr>
+                                                    <td align="left"
+                                                        style="border-left:solid 1px black; border-top:solid 1px black;">
+                                                        Total HT
+                                                    </td>
+                                                    <td align="right"
+                                                        style="border-right:solid 1px black; border-left:solid 1px black; border-top:solid 1px black;">
+                                                        {! BS_Devis_from_Lead__c.Montant_HT_sans_option__c } €
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="left"
+                                                        style="border-left:solid 1px black; border-top:solid 1px black;">
+                                                        Montant TVA* ({! prestas[0].TVA__c}%)
+                                                    </td>
+                                                    <td align="right"
+                                                        style="border-right:solid 1px black; border-left:solid 1px black; border-top:solid 1px black;">
+                                                        {! BS_Devis_from_Lead__c.prix_TVA_sans_option__c} €
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="left"
+                                                        style="border:solid 1px black;background-color: #E4EAF5;">
+                                                        <b>Total TTC</b>
+                                                    </td>
+                                                    <td align="right"
+                                                        style="border:solid 1px black;  background-color: #E4EAF5;">
+                                                        <b>{! BS_Devis_from_Lead__c.Montant_TTC_sans_Option__c } €</b>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td align="right">
+                                            <b>
+                                                {! IF(BS_Devis_from_Lead__c.Montant_HT_sans_option__c==BS_Devis_from_Lead__c.Montant_Total_HT_avec_option__c,'Total', 'Total avec options')}<br />
+                                            </b>
+                                            <table align="right" width="300" style="border-collapse: collapse ">
+                                                <tr>
+                                                    <td align="left"
+                                                        style="border-left:solid 1px black; border-top:solid 1px black;">
+                                                        Total HT
+                                                    </td>
+                                                    <td align="right"
+                                                        style="border-right:solid 1px black; border-left:solid 1px black; border-top:solid 1px black;">
+                                                        {! BS_Devis_from_Lead__c.Montant_Total_HT_avec_option__c } €
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="left"
+                                                        style="border-left:solid 1px black; border-top:solid 1px black;">
+                                                        Montant TVA* ({! prestas[0].TVA__c}%)
+                                                    </td>
+                                                    <td align="right"
+                                                        style="border-right:solid 1px black; border-left:solid 1px black; border-top:solid 1px black;">
+                                                        {! BS_Devis_from_Lead__c.prix_TVA_avec_options__c} €
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="left"
+                                                        style="border:solid 1px black;background-color: #E4EAF5;">
+                                                        <b>Total TTC</b>
+                                                    </td>
+                                                    <td align="right"
+                                                        style="border:solid 1px black;  background-color: #E4EAF5;">
+                                                        <b>{! BS_Devis_from_Lead__c.Montant_Total_TTC_avec_Options__c } €</b>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                       
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="2" align="right" valign="top" style="font-size: 12px; line-height:0.9; padding-bottom: 40px;">
+                                           *En cas de TVA à taux réduit, il y a lieu de nous adresser l'attestation correspondante avec votre confirmation de commande. La TVA à taux réduit ne s'applique que si l'attestation de TVA est jointe au devis retourné signé. 
+                                        </td>
+                                	</tr>
+                                </table>
+                                    
+                                </apex:outputpanel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="bottom">
+                                <table>
+                                    <tr>
+
+                                        <td colspan="2" width="80%" style="font-size: 12px; margin-bottom: 5px ">
+                                            <table>
+                                                <tr>
+                                                	<td  height="10" width="13" style="border: solid 2px black;">
+                                                        <br />
+                                                    </td>
+                                                    <td style="line-height: 0.9; font-size: 12px;">
+                                                      Je renonce expressément à l’exercice du droit de rétraction dont je bénéficie en vertu de l’article L 121-21 du Code de la Consommation. 
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                	<td colspan="2" style="line-height: 0.9; font-size: 12px; ">*merci de cocher cette case, à défaut nous respecterons un délai minimum de 14 jours pour exécuter votre commande </td>
+                                                </tr>
+                                            </table>
+                                            <div style="font-size: 12px; line-height: 0.9; padding-top: 5px;">
+                                                Le Client ou son représentant légal, le cas échéant, doit s’assurer que le Prestataire aura un accès aux locaux afin de pouvoir assurer sa prestation et autorise expressément le Prestataire à utiliser tout passe universel lui permettant d’accéder au(x) lieu(x) visé(s). <br /><br />
+                                                Conditions Générales de Ventes et de Services lues et acceptées
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                	<td valign="top" width="220" height="100"
+                                            style="border: solid 1px black;">
+                                            			<b>Bon pour accord :</b>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td valign="bottom" align="right" height="100" style="padding-left: 60px">
+                                            <apex:image id="footer"
+                                                        value="{! IF(BS_Devis_from_Lead__c.P_le__c='Sécurité incendie',
+                                                                   'https://batisante--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0683X00000XAYau&operationContext=DELIVERY&contentId=05T3X00001mbr5X&page=0&d=/a/3X000000yC7E/CtldGchnfOlOMPiYTq9P_Ob2p.ktNb4YCP3RRgzxZC8&oid=00D3X000002qLoo&dpt=null&viewId=', 
+                                                                   IF(BS_Devis_from_Lead__c.P_le__c='Hygiène',
+                                                                       'https://batisante--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0683X00000XAYZq&operationContext=DELIVERY&contentId=05T3X00001mbr58&page=0&d=/a/3X000000yC6u/5k9yg0MbrDphjzq8XYOFN4xHQBX6BNc.dTGbeMoXt7g&oid=00D3X000002qLoo&dpt=null&viewId=',
+                                                                       IF(BS_Devis_from_Lead__c.P_le__c='Maintenance réseaux',
+                                                               			 'https://batisante--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0683X00000XAYZr&operationContext=DELIVERY&contentId=05T3X00001mbr5r&page=0&d=/a/3X000000yC79/P7gA0wolTvRU3gnjsUZXAZ9W48k79AJSAQ8pDPClFL0&oid=00D3X000002qLoo&dpt=null&viewId=', 
+                                                               			  'https://batisante--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0683X00000XAYZq&operationContext=DELIVERY&contentId=05T3X00001mbr58&page=0&d=/a/3X000000yC6u/5k9yg0MbrDphjzq8XYOFN4xHQBX6BNc.dTGbeMoXt7g&oid=00D3X000002qLoo&dpt=null&viewId=')))}"
+                                                width="440" height="60" alt="Pôle Logo"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+</apex:page>

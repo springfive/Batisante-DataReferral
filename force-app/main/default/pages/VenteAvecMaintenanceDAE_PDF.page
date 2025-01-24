@@ -1,0 +1,530 @@
+<apex:page applyBodyTag="false" label="Prestation PDF DAE" standardController="Prestation__c" extensions="prestationExtension" renderAs="pdf">
+    <head>
+        <title>Prestation Contrat PDF</title>
+        <style>
+        	@page {
+            	margin-top: 0.25in !important;
+				margin-bottom: 0in !important;
+            	margin-left: 0.3in !important;
+            	margin-right: 0.3in !important;
+            
+            	
+            }
+            @page :first {
+            margin-bottom: 0.95in !important;
+                @bottom-center
+                {
+                	content : element(bottom-center-div);
+                }
+            }
+            body {
+            	font-size: 14px;
+            }
+            bold {
+            	font-weight: bold;
+            }
+            italic {
+            	font-style: italic;
+            }
+            underline {
+            	text-decoration: underline;
+            
+            }
+            padding125 {
+            	padding-left: 125px;
+            }
+            padding25 {
+            	padding-left : 25px;
+            }
+            paddingleft70 {
+            	padding-left: 70px;
+            }
+            .bottom-center-div
+            {
+            	position: running(bottom-center-div);             
+            	height: 60px;
+            }
+           .blue_title {
+            	color: #3788E3;
+            	font-weight: bold;
+            	padding-bottom: 10px;
+            	padding-top: 10px;
+            }
+            
+             .blue_sub_title {
+            	color: #3788E3;
+            	font-style: italic;
+            
+            }
+            .nota {
+            	color: red;
+            
+            }
+            .paragraph {
+            	padding-bottom: 10px;
+            
+            }
+            
+            .blue_array {
+            
+            	border-collapse: collapse;
+            	margin-bottom: 15px;
+            	margin-left: 10px;
+            }
+            .blue_array th {
+            	background-color: #3788E3;
+            	border: solid #ffffff 1px;
+                color: white;
+             	padding: 5px;
+            }
+            .blue_array td {
+            	border: solid #3788E3 1px;
+             	padding: 5px;
+            }
+
+            
+            .art4_array {
+            	border-collapse: collapse;
+            }
+            .art4_array td {         
+            	border: solid black 1px;
+             	padding: 5px;
+            }
+             .art4_array th {         
+            	border: solid black 1px;
+             	padding: 5px;
+            }
+            .space-before {
+            	margin-left: 20px;
+            }
+                     
+          
+        </style>
+    </head>
+    
+    <body>
+        <apex:outputPanel rendered="{! (MissingInfos != '') }">
+            <br /> {! MissingInfos }<br />
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! LotsQuantity==0}">
+            <br />Aucune valeur n’est indiquée dans le/les champs {! ChiffrageNameBlocage }.<br/>Merci de saisir une valeur supérieure à 0 puis régénérer le document.<br/>
+        </apex:outputPanel>
+        <div style="page-break-after:avoid">
+       		
+           
+        	<apex:outputPanel rendered="{! (MissingInfos == '') && (LotsQuantity != 0) }">
+            	<div>
+       
+            		<apex:outputPanel >
+              
+            			<c:PrestationContratVoltairHeader Canceled="{! Canceled }" Title="{! Title }" InstallPrice="{! InstallPrice }"
+             			 	       	                  	  PoliceSize="14px" CodeDict="{! CodeDict }" 
+                            		                      PrestaProposition="{! PrestaProposition }" DevisInfos="{! DevisInfos }" />
+                        
+                        <table width="100%">
+                    			<tr>
+                                    <td class='blue_title'>
+                                        Art. I – OBJET DU CONTRAT
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        VOLT’ AIR vend des défibrillateurs pour les parties communes d’immeubles d’habitation. VOLT’AIR s’engage à réaliser la pose et la maintenance des défibrillateurs posés tel que défini à l’article 2 du présent contrat pour les immeubles suivants : <br /><br />
+                                        <bold>Site :</bold><br />
+                                        <apex:outputText value="{!DevisInfos[1]}" escape="false" />
+                                        <table align="right">
+                                            <tr>
+                                                <td>
+                                                    <bold>CLIENT :</bold><br />
+                                                    {! DevisInfos[2] }<br />
+                                                    {! DevisInfos[3] }
+                                                   
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        <table width="100%" style='padding-bottom: 15px'>
+                            <tr>
+                                <td class='blue_title'>
+                                        Art. II – DESCRIPTIF DE LA PRESTATION
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="paragraph" >
+                                    <div class="space-before">
+                                       <table width="100%">
+                                        	<tr>
+                                            	<td style='padding-right: 15px' valign='top'>-</td>
+                                                <td>Livraison et Pose d’un défibrillateur sur les immeubles désignés,</td>
+                                           </tr>
+                                           <tr>
+                                           		<td style='padding-right: 15px' valign='top'>-</td>
+                                               <td>Le matériel prévu est de marque SCHILLER – référence FRED PA -1 automatique</td>
+                                           </tr>
+                                           <tr>
+                                           		<td style='padding-right: 15px' valign='top'>-</td>
+                                             	<td>Sensibilisation auprès des personnes présentes le jour de l’intervention</td>
+                                           </tr>
+                                           <tr>
+                                           		<td style='padding-right: 15px' valign='top'>-</td>
+                                               <td>Maintenance du défibrillateur.</td>
+                                           </tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                            	<td>
+                                    <div class="space-before paragraph">
+                                        <u><b>Les points de vigilance :</b></u>
+                                        <table width="100%">
+                                        	<tr>
+                                            	<td style='padding-right: 15px' valign='top'>-</td>
+                                                <td>L’installation du défibrillateur doit être réalisée dans un emplacement visible par les occupants de l’immeuble avec un accès facile et permanence ;</td>
+                                            </tr>    
+                                        	<tr>
+                                            	<td>-</td>
+                                                <td>La signalisation du défibrillateur est obligatoire selon l’Arrêté du 16 Août 2010 ;<br /></td>
+                                            </tr>
+                                        
+                                         
+                                    	</table>
+                                    </div>
+									<span>Ces points de vigilance sont rappelés dans le détail du <b>DECRET n° 2018-1186 du 19 décembre 2018.</b></span>
+                                </td>
+                            </tr>
+                        </table>
+                         <table width="100%">
+                            <tr>
+                                <td class='blue_title'>
+                                        Art. III – OBLIGATIONS - GARANTIES
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="padding-bottom: 5px">
+                                        <b>Le Client</b> s’engage à respecter l’ensemble des obligations mises à sa charge dans le cadre du contrat.
+                                    </div>
+                                    <div class="paragraph">
+                                        En cas de dysfonctionnement du matériel, le Client s’engage à en informer <u><b>immédiatement par recommandé avec AR</b></u> le Prestataire. Le défibrillateur est garanti par le constructeur pendant deux (2) ans à compter de la pose. Le défibrillateur non conforme sera soit remplacé, soit réparé selon le choix du constructeur.<br />
+                                        Le défibrillateur non conforme sera soit remplacé, soit réparé selon le choix du constructeur.<br />
+                                        Le Client ne doit en aucun cas déplacer le matériel, changer les réglages et doit attendre l’intervention du Prestataire.<br />
+                                        <u>Le vol et l’utilisation frauduleuse du matériel installé ne sont pas pris en compte dans la garantie.</u>
+                                    </div>
+                                    <div>
+                                        <b>Le prestataire</b> s’engage à respecter les conditions stipulées dans le présent contrat, en particulier sur la fourniture et pose d’un défibrillateur répondant à la norme Afnor NF S99-170.
+                                    </div>
+                                </td>
+                             </tr>
+                        </table>
+                        <table width="100%" class="bottom-center-div">
+                                <tr>
+                                    <td align="center">
+                                        <apex:image id="footerVoltair" height="60" url="{!$Label.Voltair_Footer}" alt="Footer" />
+                                    </td>
+                                </tr>
+                            </table>
+                    </apex:outputPanel>
+                </div>
+                <div >
+      
+            <apex:outputPanel >
+               <table width="100%" style="padding-bottom: 10px;">
+                   <tr>
+                       <td class='blue_title'>
+                           Art. IV – CONTENU DE LA MISSION
+                       </td>
+                   </tr>
+                   <tr>
+                       <td>
+                       		<div style='padding-bottom: 10px'>Le contrat est conclu pour une période ferme finissant à la fin de la sixième année de maintenance. Il ne peut être résilié que pour manquement d’une des parties à ses engagements. En cas de résiliation anticipée, l’année de maintenance en cours est entièrement dûe.</div>
+                       </td>
+                   </tr>
+                   <tr>
+                       <td class='blue_sub_title'>
+                           <div class="space-before">1 - Année n : Livraison et pose</div>
+                       </td>
+                   </tr>
+                    <tr>
+                       <td>
+                           <div class="space-before">
+                               <table width="100%">
+                                   <tr>
+                                       <td style='padding-right: 15px' valign='top'>-</td>
+                                       <td>Confirmation des dates de livraison par VOLT’ AIR au Client.</td>
+                                   </tr>
+                                   <tr>
+                                       <td style='padding-right: 15px' valign='top'>-</td>
+                                       <td>Livraison et pose par Volt’AIR des défibrillateurs</td>
+                                   </tr>
+                                   <tr>
+                                       <td style='padding-right: 15px' valign='top'>-</td>
+                                       <td>Sensibilisation au fonctionnement des personnes présentes le jour de l’installation</td>
+                                   </tr>
+                                   <tr>
+                                       <td style='padding-right: 15px' valign='top'>-</td>
+                                       <td>
+                                           A l’issue de la pose des défibrillateurs, le Prestataire remettra au Client des bons d’émargement de la pose effective du défibrillateur et de son bon fonctionnement, accompagné par la liste des occupants présents ayant bénéficié de la sensibilisation.
+                                       </td>
+                                   </tr>
+                                   
+                               </table>
+                           </div>
+                       </td>
+                   </tr>
+                    <tr>
+                       <td class='blue_sub_title'>
+                           <div class="space-before">2 - Maintenances annuelles : Années n+1 à n+3 et suivantes</div>
+                       </td>
+                   </tr>
+                    <tr>
+                       	<td>
+                            <div class="space-before paragraph">Le contrat de maintenance est souscrit pour une période de 7 ans et reconductible pour la même période à l’issue de la 1ère période.</div>
+                            <div class="space-before paragraph">Les opérations de maintenance prévues contractuellement seront réalisées selon les modalités suivantes :</div>
+                            <table class="blue_array" width="100%">
+                                    <tr>
+                                        <th rowspan="2"  align="center">Prestations</th>
+                                        <th colspan="6"  align="center">Année</th>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th  align="center">n+1</th>
+                                        <th align="center">n+2</th>
+                                        <th align="center">n+3</th>
+                                        <th align="center">n+4</th>
+                                        <th align="center">n+5</th>
+                                        <th align="center">n+6</th>
+                                    </tr>
+                                     <tr>
+                                        <td>
+                                            Vérifications :<br />
+                                            <span class="space-before">-  des diodes</span><br />
+                                            <span class="space-before">-  des électrodes</span><br />
+                                            <span class="space-before">-  kit secours (trousse)</span><br />
+                                            <span class="space-before">-  état du boitier</span>
+                                         </td>
+                                        <td  align="center">X</td>
+                                        <td align="center">X</td>
+                                        <td align="center">X</td>
+                                        <td align="center">X</td>
+                                        <td align="center">X</td>
+                                        <td align="center">X</td>
+                                    </tr>
+                                 	<tr>
+                                        <td>
+                                          Remplacement des électrodes
+                                         </td>
+                                        <td  align="center"></td>
+                                        <td align="center"></td>
+                                        <td align="center">X</td>
+                                        <td align="center"></td>
+                                        <td align="center"></td>
+                                        <td align="center">X</td>
+                                    </tr>
+                                	<tr>
+                                        <td>
+                                          Remplacement des batteries
+                                         </td>
+                                        <td  align="center"></td>
+                                        <td align="center"></td>
+                                        <td align="center"></td>
+                                        <td align="center"></td>
+                                        <td align="center"></td>
+                                        <td align="center">X</td>
+                                    </tr>
+                                 <tr>
+                                     <td>
+                                       Déclenchement du DAE
+                                     </td>
+                                     <td  align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                </tr>
+                                <tr>
+                                     <td>
+                                           Présence des signalétiques
+                                     </td>
+                                     <td  align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                </tr>
+                                 <tr>
+                                     <td>
+                                           Remplissage étiquettes de passage
+                                     </td>
+                                     <td  align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                     <td align="center">X</td>
+                                </tr>
+                            </table>
+                        </td>
+                   </tr>
+                </table>
+                <table width="100%">
+                   <tr>
+                       <td class='blue_title'>
+                           Art. V – CONTEXTE REGLEMENTAIRE
+                       </td>
+                   </tr>
+                   <tr>
+                       <td>
+                           Les défibrillateurs sont des dispositifs médicaux de classe II b. En application de l’article R.5212-25 du code de la santé publique, selon l’arrêté du 03/03/2003, l’exploitant a une obligation de « mise en œuvre de la maintenance et des contrôles de qualité prévus pour les dispositifs médicaux qu’il exploite ».<br />
+                           Si les préconisations du fabricant en matière de maintenance n’étaient pas suivies, la responsabilité de l’exploitant pourrait être engagée si un incident était imputable à un défaut de maintenance.
+                       </td>
+                    </tr>
+                </table>
+                         
+            </apex:outputPanel>
+        </div>
+        		<div  >
+      
+            		<apex:outputPanel >
+                 		<table width="100%" style='margin-bottom:10px'>
+                   			<tr>
+                       			<td class='blue_title'>
+                           			Art. VI – PRIX ET MODALITES DE PAYEMENT
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td>
+                                        Le prix du présent contrat s’entend des prestations stipulées en article 4, réalisées dans les lieux désignés et pendant les jours ouvrés du lundi au vendredi de 8 heures à 17 heures 30.<br /><br />
+                                       La fourniture et la pose du défibrillateur seront facturées suite à l’intervention. Le défibrillateur restera la propriété de VOLT’AIR jusqu’au paiement intégral de la facture.<br />
+                                       Les facturations de maintenance seront émises chaque 1er janvier pour l’année à venir. Le tarif de la maintenance sera revu chaque année suivant les indices mentionnés dans les conditions générales de vente.<br /><br />
+                                       Donneront lieu à une facturation complémentaire en sus du présent engagement :
+                                       <ul>
+                                           <li><span style='padding-left: 10px'>Toute intervention n’ayant pu être effectuée dans le cadre du planning, du fait du client, malgré le déplacement du Prestataire, et nécessitant la ré-intervention de ce dernier ;</span></li>
+                                           <li><span style='padding-left: 10px'>Toute Prestation Complémentaire, étant précisé que les Prestations Complémentaires n’ayant pu être effectuées du fait du client, malgré le déplacement du Prestataire, sera facturée forfaitairement 150 euros HT en sus du coût de la mission.</span></li>
+                                       </ul>
+                                       Les prix y sont exprimés en euros, HT et TTC. <br /><br />
+                                       <div style="page-break-inside:avoid">
+                                           Toute facture est payable dans un délai de trente (30) jours suivant sa date d’émission. Passé ce délai, toute somme impayée portera intérêts de plein droit, sans qu’aucune mise en demeure préalable ne soit nécessaire, calculé par rapport au taux appliqué par la BCE à son opération de refinancement la plus récente majoré de 10 points. En outre, toute facture impayée à son échéance donnera lieu au versement, par le Client, d’une indemnité forfaitaire pour frais de recouvrement d’un montant de 40 euros sans préjudice de toute autre action que le Prestataire serait en droit d’intenter à l’encontre du Client. <br /><br />
+                                       		A ce titre, il est rappelé que tout Client ayant souscrit l’engagement ou sollicité l’intervention du Prestataire doit s’assurer, au préalable, qu’il dispose des fonds nécessaires aux règlements des factures afférentes.
+                                       </div>
+                                   </td>
+                                </tr>
+                            </table>
+                        <table width="100%">
+                   			<tr>
+                       			<td class='blue_title'>
+                           			Art. VII – OFFRE TARIFAIRE
+                                   </td>
+                               </tr>
+                               <tr>
+                                  	<td>
+                                   		<div class="paragraph">
+                                            
+                                        	<table class='art4_array' width="90%" align="center">
+                                            	<tr>
+                                            		<th align="center" width="50%">Prestations</th>
+                                                	<th align="center" width="25%"><b>Tarif unitaire en € HT</b></th>
+                                                	<th align="center" width="25%"><b>Tarif unitaire en € TTC</b></th>
+                                            	</tr>
+                                            	<tr>
+                                            		<td style="padding-left: 10px">
+                                                    	-&nbsp; Fourniture et pose d’un DAE<br />
+                                                    	-&nbsp; Sensibilisation des occupants<br />
+                                                        -&nbsp; Pose de signalétique<br />
+                                                    </td>
+                                                    <td align="center">1 300 €</td>
+                                                    <td align="center">1 560 €</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="paragraph">
+                                            <table class='art4_array paragraph' width="90%" align="center">
+                                                <tr>
+                                                    <td width="50%">Intervention suite à utilisation « abusive » du matériel</td>
+                                                    <td width="25%" align="center">150 €</td>
+                                                    <td width="25%" align="center">180 €</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                         <div class="paragraph" >
+                                             <table class='art4_array' width="90%" align="center">
+                                                <tr>
+                                                    <td width="50%"><b>Tarif maintenance annuelle </b><br />
+                                                        <span style="padding-left: 5px"><i>Pour l’année n+, les années suivantes indexées</i></span></td>
+                                                    <td width="25%" align="center">195 € par an</td>
+                                                    <td width="25%" align="center">234 € par an</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        Le tarif de maintenance annuelle sera augmenté selon les modalités d’indexation précisées dans les Clauses Générales de Vente du présent document.
+                                   	</td>
+                            </tr>
+                        </table>
+                        <table width="100%">
+                   			<tr>
+                       			<td class='blue_title'>
+                           			Art. VIII – ASSURANCES ET RESPONSABILITES
+                                   </td>
+                               </tr>
+                            <tr>
+                                <td>
+                                    Le Prestataire s’engage à contracter toutes assurances nécessaires, y compris celles relatives à certaines préconisations d’utilisation et de mise en œuvre de « produits à usage restreint ».<br />
+									Le Prestataire certifie que les produits employés sont conformes à la législation et réglementation en vigueur au jour de son intervention.
+                                </td>
+                            </tr>
+                        </table>
+                         <table width="100%">
+                   			<tr>
+                       			<td class='blue_title'>
+                           			Art. IX – JURIDICTION COMPETENTE
+                                   </td>
+                               </tr>
+                            <tr>
+                                <td>
+                                    <div style="font-size:11px; padding-bottom: 10px">
+                                        DANS LE CAS OU LES PARTIES ONT LA QUALITE DE COMMERÇANTS, TOUT LITIGE SERA SOUMIS AUX JURIDICTIONS PARISIENNES.
+                                    </div>
+                                    Le Client est informé qu’en cas contestation entre les Parties, les Parties peuvent, si elles le souhaitent, recourir à des modes alternatifs de règlement des litiges et, notamment, la médiation conventionnelle ou la conciliation.
+                                </td>
+                             </tr>
+                        </table>
+                        <table width='100%'>
+                            <tr>
+                            	<td class='blue_title'>
+                           			Art. X – ANNEXE
+                                </td>
+                            </tr>
+                            <tr>
+                            	<td colspan="2" style="padding-bottom: 10px; font-size: 13px">
+                                    Les conditions générales de vente font partie intégrante du contrat.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="50%" valign="top">
+                                    
+                                    Prise d'effet: ___ / ___ / ______<br /><br />Neuilly Plaisance, le :  {! DAY(TODAY()) }/{! MONTH(TODAY()) }/{! YEAR(TODAY()) }<br />
+                                    <apex:image style="width:150px;" id="tamponVoltair" url="{!$Label.Tampon_Voltair}" alt="Tampon Signé" />
+                                    
+                                </td>
+                                <td valign='top'>
+                                   <br /><br /><br />
+                                    <bold> 
+                                        {! DevisInfos[2] }<br />
+                                        Bon pour accord <br />
+                                    </bold>
+                                    (Date-cachet-signature)
+                                </td>
+                            </tr>
+                        </table>         
+                    </apex:outputPanel>
+                </div>
+                            
+            </apex:outputPanel>
+        </div>
+       
+	</body>
+</apex:page>

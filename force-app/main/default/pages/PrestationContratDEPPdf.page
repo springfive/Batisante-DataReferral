@@ -1,0 +1,1224 @@
+<apex:page applyBodyTag="false" label="Prestation DEP PDF" standardController="Prestation__c" extensions="prestationExtension" renderAs="pdf">
+    <head>
+        <title>Prestation Contrat PDF</title>
+        <style>
+        	@page {
+            	margin-top: 0.4in !important;
+				margin-bottom: 0in !important;
+            	margin-left: 0.3in !important;
+            	margin-right: 0.3in !important;
+            	
+            }
+            @page :first {
+            margin-top: 0.25in !important;
+             margin-bottom: 1.1in !important;
+                @bottom-center
+                {
+                	content : element(bottom-center-div);
+                }
+            }
+            body {
+            	font-size: 13px;
+            }
+            bold {
+            	font-weight: bold;
+            }
+            italic {
+            	font-style: italic;
+            }
+            underline {
+            	text-decoration: underline;
+            }
+            padding125 {
+            	padding-left: 125px;
+            }
+            padding25 {
+            	padding-left : 25px;
+            }
+            paddingleft70 {
+            	padding-left: 70px;
+            }
+            .bottom-center-div
+            {
+            	position: running(bottom-center-div);             
+            	height: 60px;
+            }
+           .art_title {
+            	text-decoration: underline;
+            	font-weight: bold;
+            	margin-bottom: 10px;
+            	margin-top: 10px;
+            }
+             .art_title2 {
+            	
+            	font-weight: bold;
+            	margin-bottom: 10px;
+            	margin-top: 10px;
+            }
+            
+            .nota {
+            	color: red;
+            
+            }
+            .paragraph {
+            	padding-bottom: 10px;
+            	page-break-inside:avoid;
+            }
+            ul {
+               list-style-type: none;
+            }
+            li:before {
+               content: '- ';
+            }
+
+              .blue_array {
+            
+            	border-collapse: collapse;
+            	margin-bottom: 15px;
+            	margin-left: 10px;
+            }
+            .blue_array th {
+            	background-color: #3788E3;
+                color: white;
+             	padding: 15px;
+            }
+            .blue_array td {
+            	border: solid #3788E3 1px;
+             	padding: 15px;
+            }
+            
+            .caseCocher{
+                width  : 10px;
+  height : 10px;
+border: 1px solid;       
+           }
+          
+        </style>
+    </head>
+    
+    <body >
+        <apex:outputPanel rendered="{! (MissingInfos != '') }">
+            <br /> {! MissingInfos }<br />
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! LotsQuantity==0}">
+            <br />Aucune valeur n’est indiquée dans le/les champs {! ChiffrageNameBlocage }.<br/>Merci de saisir une valeur supérieure à 0 puis régénérer le document.<br/>
+        </apex:outputPanel>
+        <div style="page-break-after:always;">
+            <apex:outputPanel rendered="{! (MissingInfos == '') && (LotsQuantity != 0) }" style="width: 100%">
+                <table width="100%" class="bottom-center-div">
+                    <tr>
+                        <td align="center">
+                            <apex:image id="FooterDiagEtControle" width="100%" url="{!IF(Prestataire == 'DEP',$Resource.Footer_DEP, IF(Prestataire == 'ETB Ascenseurs',$Resource.Footer_ETB, $Resource.Footer_01Ctrl)) }" alt="Footer" />
+                        </td>
+                    </tr>
+                </table>
+                <apex:outputPanel style="width: 100%">
+                    
+                    <c:PrestationContratHeader Canceled="{! Canceled }" Title="{! Title }" InstallPrice="{! InstallPrice }"
+                                               PoliceSize="{! PoliceSize }" CodeDict="{! CodeDict }" 
+                                               PrestaProposition="{! PrestaProposition }" DevisInfos="{! DevisInfos }" Pole="{! Prestataire }"/><br />
+                    
+                    
+                    Entre les soussignés :<bold style="padding-left:15px;"><apex:outputText value="{!DevisInfos[1]}" escape="false" /></bold><br/>
+                    représenté par : <bold style="padding-left:45px;">{! DevisInfos[2] }</bold><br/>
+                    <a style="padding-left:130px"></a>{! DevisInfos[3] }<br/><br/>
+                    
+                    <div style="width: 100%; padding-bottom: 10px">
+                        Désigné ci-après et au verso : le "Client" d'une part, et la société "<apex:outputText value="{! Prestataire }" escape="false"  ></apex:outputText>" ci-dessous référencée, d'autre part, il a été exposé et convenu ce qui &nbsp; suit :
+                    </div>
+                    <div class="paragraph">
+                        <c:PrestationContratArtObjet ArticleNumber="{! NumberOfObjectArticle }" Prestataire="{! Prestataire }" legalText="{! LegalText }" ContractTitle="{! Title }"></c:PrestationContratArtObjet>
+                    </div>
+                    <div class="paragraph" style="page-break-inside:auto;">
+                        <c:PrestationContratArtDescPresta ArticleNumber="{! NumberOfObjectArticle+1 }" Description="{! DescriptifPrestation }" nbPassage="{! PassageFrequency }" Recurrence="{! NbMounthLabelOfPrestation }" CodeDictNum="{! CodeDictNum}" Context="{! LegalText }"></c:PrestationContratArtDescPresta>
+                        
+                    </div>
+                    
+                    <div style="page-break-inside:avoid;">
+                        <div class="paragraph" >
+                            {! NumberOfObjectArticle+2 } -  <span class="art_title">TARIFS</span>
+                            <apex:outputPanel rendered="{! LegalText != 'Installations électriques'}">
+                                <div style="padding-top: 5px">
+                                    <apex:outputText value="{! PhrasePrix }" escape="false"></apex:outputText><b> {! TotalPrice } Euros </b>hors taxes soit <b>{! TotalPriceTTC } Euros </b>T. T. C.<br />
+                                      
+                                    <apex:outputText escape="false" value="{! IF(CodeDictNum !='5383'&& CodeDictNum!= '5382'&&
+                                                                           CodeDictNum!= '5381'&& CodeDictNum!= '5380' ,'Nombre de cage(s) : &nbsp;'+TEXT(LotsQuantityDetails[0])+'<br />', '') }"></apex:outputText>
+   
+                                    
+                                    <apex:outputText value="{! LotsAsStringNoCage }" escape="false"></apex:outputText>
+                                </div>
+                            </apex:outputPanel> 
+                         <apex:outputPanel rendered="{! LegalText == 'Installations électriques'}">
+                                <div style="padding-top: 15px; padding-bottom:10px">
+                                    <apex:outputText value="{! PhrasePrix }" escape="false"></apex:outputText>
+                                </div>	
+                                <apex:outputText value="{! TarifsArray }" escape="false"></apex:outputText>
+                                
+                            </apex:outputPanel>
+                        </div>
+                        <div class="paragraph" >
+                            {! NumberOfObjectArticle+3 } -  
+                            <span class="art_title">
+                                <apex:outputText value="{! IF(Exclusions == '','CONDITIONS PARTICULIERES DE VENTE','GARANTIES ET AVANTAGES') }"></apex:outputText> 
+                            </span>
+                            
+                            <div style="padding-top: 5px">
+                                <apex:outputText value="{! Avantages }" escape="false"></apex:outputText>
+                            </div>
+                        </div>
+                        <apex:outputText rendered="{! Exclusions != '' }">
+                            <div class="paragraph" >
+                                {! NumberOfObjectArticle+4 } -  <span class="art_title">EXCLUSIONS</span>
+                                
+                                <div style="padding-top: 5px">
+                                    <apex:outputText value="{! Exclusions }" escape="false"></apex:outputText>
+                                </div>
+                            </div>
+                        </apex:outputText>
+                    </div>
+                </apex:outputPanel>
+                <table width='100%'>
+                    <tr>
+                        <td width="50%" valign="top">
+                            <apex:outputText escape="false" value="{!IF(Prestataire == 'DEP','Pour D. E. P,<br />','Pour 01 Controle,<br />')}" ></apex:outputText>
+                            
+                            Neuilly Plaisance, le :  {! DAY(TODAY()) }/{! MONTH(TODAY()) }/{! YEAR(TODAY()) }<br />
+                            <apex:image style="width:120px;" id="DEP_Tampon" url="{!$Resource.Tampon_BSE}" alt="Tampon Signé" />
+                            
+                        </td>
+                        <td valign='top'>
+                            Date de prise d'effet: 01/01/<br />
+                  
+                            <apex:outputText escape="false" value="{! IF(CodeDictNum== '4453'||CodeDictNum== '4454' ,'Date de réalisation de la prochaine surveillance :<br/>', '') }"></apex:outputText>
+                       <apex:outputText escape="false" value="{! IF(CodeDictNum== '4455'||CodeDictNum== '4456' ,'Date de la prochaine surveillance des matériaux amiantés:<br/>', '') }"></apex:outputText>
+                      
+                            <bold> 
+                                {! DevisInfos[2] }<br />
+                                Bon pour accord au conditions fixées ci-dessus et aux conditions générales ci-jointes<br />
+                            </bold>
+                            (Date-cachet-signature)
+                        </td>
+                    </tr>
+                </table>  
+                
+            </apex:outputPanel>
+        </div>
+        <bold align="center">Informations contrat</bold>
+        <br/><br/>N° site : <apex:outputLabel value="{!IF(devisInfos.size>4, DevisInfos[4],'')}" /><br/>
+        N° contrat SF : {! PrestaProposition }<br/>
+        Ref client : {! DevisInfos[0] }<br/><br/><br/>
+        <bold align="center">Liste des paramètres de lots de ce contrat</bold>
+        <br/><br/><apex:outputText value="{!LotsAsString}" escape="false"/><br/><br/>
+        <bold align="center">Coefficients</bold>
+        <br/><br/><apex:outputText value="{!CoefAsString}" escape="false"/>
+           
+        <apex:outputPanel rendered="{! CodeDict=='C0141' ||CodeDict=='C0142' }">
+            <div style="page-break-before:always;">
+                     </div>
+<table width="100%;" style="border: solid black 1px;">
+<tr>
+<td align="left" style="border-right: solid black 1px;">
+<apex:image id="Image" height="80" url="{! IF(Pole == 'Maintenance réseaux', $Resource.Logo_VOLTAIR, IF(Pole == 'DEP', $Resource.Logo_DEP,IF(Pole == 'ETB Ascenseurs', $Resource.Logo_ETB, $Resource.Logo_01Ctrl)))}" alt="Pôle Logo" />
+
+</td>
+<td align="right">
+<h1 style='font-size:16px;text-align:center'>ANNEXE TECHNIQUE VERIFICATION DES INSTALLATIONS ELECTRIQUES</h1></td>
+</tr>
+</table>
+            <br/><br/>
+<span class='art_title2'>1 - Objectif de la mission</span><br/>
+La mission a pour objet la vérification réglementaire des installations électriques :
+<ul><li>Des établissements soumis au code du travail (ERT) </li>
+<li>Des établissements recevant du public (ERP).</li></ul>
+
+<span class="art_title2">2 - Textes de référence</span><br/>
+
+<span class='art_title2' > 2.1 - Vérification CONSUEL</span>
+<ul><li>Décret n° 72-1120 du 14 décembre 1972 modifié par le Décret n°2001-222 du 6 mars 2001</li>
+<li>Arrêté du 17 octobre 1973</li>
+</ul>
+
+<span class='art_title2' >2.2 - Etablissements soumis au code du travail</span>
+<ul>
+<li>	Décret 2010-1016 du 30 Août 2010 relatif aux obligations de l'employeur pour l'utilisation d'installations électriques des lieux de travail (4ème partie – Livre 2 – Titre 2 – Chapitre 6 du code du travail)</li>
+<li>Lettre circulaire DGT 2012/12 du 09 Octobre 2012 relative à prévention des risques électriques</li>
+<li>Arrêté du 26 Décembre 2011, fixant les périodicités, méthodologie, et étendue des vérifications</li>
+<li>Article 8 de l’arrêté 2013-00789 du 15 juillet 2013 (uniquement ville de Paris)</li>
+<li>Décret 2010-1018 du 30 Août 2010 portant à diverses dispositions relatives à la prévention des risques électriques dans les lieux de travail.</li>
+</ul>
+
+<span class='art_title2' >2.3 - Etablissements recevant du public</span>
+<ul>
+<li>Arrêté du 25 juin 1980 modifié, articles EL, EC et prescriptions particulières</li>
+<li>Arrêté du 22 juin 1990 modifié</li>
+</ul>
+
+<span class='art_title2' >2.3.1 - Vérifications réglementaires après travaux (VRAT)</span>
+
+<ul>
+    <li>Norme NF P03-100 : Critères généraux pour la contribution du contrôle technique à la prévention des aléas techniques dans le domaine de 
+la construction</li>
+                </ul>
+<span class='art_title2' >3 - Contenu et déroulement de la mission</span><br/>
+            <span class='art_title' >3.1 Pour les établissements soumis au code du travail, ou la partie soumise au code du travail d’un établissement recevant du public</span><br/><br/>             
+       <span class='art_title2' >3.1.1 - Vérification CONSUEL</span><br/>
+Vérification ponctuelle d’une installation électrique neuve avant la première mise sous tension. Cette vérification a pour but la fourniture des éléments nécessaires pour l’établissement d’un certificat par l’organisme CONSUEL obligatoire avant une première mise sous tension d’une installation électrique.<br/>
+<br/>
+<span class='art_title2' >3.1.2 - Vérification initiale</span><br/>
+Vérification ponctuelle d’une installation électrique neuve ou ayant subi une modification de structure comme décrit au 5.1. Cette vérification a pour but de s’assurer de la conformité de l’installation électrique après travaux aux réglementations applicables à l’établissement.<br/>
+<br/>
+<span class='art_title2' >3.1.3 - Vérification périodique</span><br/>
+Vérification annuelle d’une installation électrique existante en phase d’exploitation. Cette vérification a pour but de s’assurer du maintien en état de conformité des installations électriques en phase d'exploitation. Elle doit être réalisée entre le dixième et quatorzième mois suivant toutes autres vérifications antérieures.<br/>
+<br/>
+<span class='art_title2' >3.1.4 - Vérification sur demande de l’inspecteur du travail</span><br/>
+Vérification ponctuelle d’une installation électrique existante réalisée sur demande de l’inspection du travail. Cette vérification est demandée au chef d’établissement par la réception d’un courrier recommandé suite à un contrôle de l’inspection du travail, elle a pour but de s’assurer de la conformité de l’installation électrique aux réglementations applicables à l’établissement.<br/>
+<br/>
+<span class='art_title2' >3.1.5 Vérification périodique 1er visite</span><br/>
+Vérification ponctuelle d’une installation électrique existante en phase d’exploitation pour laquelle aucune vérification antérieure n’a été effectuée. Cette vérification a pour but de s’assurer de la conformité de l’installation électrique aux réglementations applicables à l’établissement. Elle est menée telle une vérification initiale.<br/>
+<br/>
+            
+            <div style="page-break-before:always;"></div>
+                
+                <table width="100%;" style="border: solid black 1px;">
+<tr>
+<td align="left" style='border-right:solid black 1px;'>
+<apex:image height="80" url="{! IF(Pole == 'Maintenance réseaux', $Resource.Logo_VOLTAIR, IF(Pole == 'DEP', $Resource.Logo_DEP,IF(Pole == 'ETB Ascenseurs', $Resource.Logo_ETB, $Resource.Logo_01Ctrl)))}" alt="Pôle Logo" />
+
+</td>
+<td align="right">
+<h1 style='font-size:16px;text-align:center'>ANNEXE TECHNIQUE VERIFICATION DES INSTALLATIONS ELECTRIQUES</h1></td>
+</tr>
+</table>
+            <br/><br/>
+<span class='art_title2' >3.1.6 Etendue et méthodologie des vérifications : l’étendue et la méthodologie des vérifications sont fixées par l’arrêté du 26 décembre 2011.</span><br/>
+
+  
+  <br/><br/>
+   <table width="100%;" style="border: solid black 1px; ">
+   
+     <tr>
+  <td style="border-right: solid black 1px;padding:10px">POINTS EXAMINÉS
+Nota - En l'absence de mention de domaine particulier de tension, le point s'applique à tous les domaines de tension.
+</td>  
+<td colspan="4" style="border-right: solid black 1px;padding:10px">VÉRIFICATION INITIALE</td>  
+<td colspan="3" style="padding:10px" >VÉRIFICATION
+PÉRIODIQUE
+</td>
+  </tr>
+  <tr>
+  <td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">
+</td>  
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">Examen de document</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >Examen sur site</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >Essai</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >Mesurage</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >Examen sur site</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >Essai</td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" >Mesurage</td>
+  </tr>
+  
+    <tr>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">A. ― Conditions générales d'installation</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+	  </tr>
+	  
+	    <tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">1. Adaptation des matériels aux conditions d'influences externes
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		
+		<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">
+2. Conformité des matériels BT ayant une fonction de sécurité
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		
+		<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">3. Mise en œuvre des canalisations</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		
+				<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4. Fixation et état mécanique apparent des matériels</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+				<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">5. Isolement des installations BT</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+
+		</tr>
+		
+						<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">6. Identification des circuits et des appareillages - repérage des conducteurs</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+						<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">7. Sectionnement</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+						<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">8. Coupure d'urgence</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >En BT si doute</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >En BT si doute</td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+								<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">9. Locaux renfermant des matériels HT</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+										<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">9.1. Conditionnement - ventilation</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+										<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">9.2. Portes – conditions d'ouverture et de fermeture</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		
+										<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">9.3. Eclairage de sécurité</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >Sauf autonomie</td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+                </table>
+                
+                
+    
+      
+		
+		
+		
+		<div style="page-break-before:always;">
+                           <table width="100%;" style="border: solid black 1px;">
+<tr>
+<td align="left" style='border-right:solid black 1px;'>
+<apex:image height="80" url="{! IF(Pole == 'Maintenance réseaux', $Resource.Logo_VOLTAIR, IF(Pole == 'DEP', $Resource.Logo_DEP,IF(Pole == 'ETB Ascenseurs', $Resource.Logo_ETB, $Resource.Logo_01Ctrl)))}" alt="Pôle Logo" />
+
+</td>
+<td align="right">
+<h1 style='font-size:16px;text-align:center'>ANNEXE TECHNIQUE VERIFICATION DES INSTALLATIONS ELECTRIQUES</h1></td>
+</tr>
+</table>
+            <br/><br/> 
+            
+		   <table width="100%;" style="border: solid black 1px; ">
+		   
+		      <tr>
+  <td style="border-right: solid black 1px;padding:10px">POINTS EXAMINÉS
+Nota - En l'absence de mention de domaine particulier de tension, le point s'applique à tous les domaines de tension.
+</td>  
+<td colspan="4" style="border-right: solid black 1px;padding:10px">VÉRIFICATION INITIALE</td>  
+<td colspan="3" style="padding:10px" >VÉRIFICATION
+PÉRIODIQUE
+</td>
+  </tr>
+               
+  	
+		
+										<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">9.4.Canalisations étrangères</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		
+												<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">9.5. Protection des transformateurs contre les surintensités et des défauts internes
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+												<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">9.6. Absence de fuite et niveau de diélectrique liquide
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+               
+               
+               
+               
+               
+		
+												<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">9.7. Tabourets, tapis, gants, perches à corps, appareils de vérification d'absence de tension</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		
+												<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">B. ― Protections contre les risques de chocs électriques
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+												<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">1. Prises de terre
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >Si la mesure a un sens</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" >Si la mesure a un sens</td>
+
+		</tr>
+		
+												<tr> 
+<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">2. Conducteurs de protection et liaisons équipotentielles
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >En HT seulement si doute</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px; border-top: solid black 1px;" >En HT seulement si doute</td>
+
+		</tr>
+		<tr>
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">3. Protection contre les risques de contact direct :
+
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		<tr>
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">3.1. Eloignement
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		<tr>
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">3.2. Obstacles
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">3.3. Enveloppes
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">3.4. Verrouillages, schémas et consignes de manœuvre
+
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">3.5. Isolation
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">3.6. Culots, douilles, prises de courant, prolongateurs et connecteurs
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">3.7. Lignes de contact
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">3.8. Prescriptions spécifiques aux locaux à risques particuliers de choc électrique
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4. Protection contre les risques de contact indirect :
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		
+		
+		
+		
+		
+		
+		</table>
+		
+		</div>
+		
+		<div style="page-break-before:always;">
+            
+                            <table width="100%;" style="border: solid black 1px;">
+<tr>
+<td align="left" style='border-right:solid black 1px;'>
+<apex:image height="80" url="{! IF(Pole == 'Maintenance réseaux', $Resource.Logo_VOLTAIR, IF(Pole == 'DEP', $Resource.Logo_DEP,IF(Pole == 'ETB Ascenseurs', $Resource.Logo_ETB, $Resource.Logo_01Ctrl)))}" alt="Pôle Logo" />
+
+</td>
+<td align="right">
+<h1 style='font-size:16px;text-align:center'>ANNEXE TECHNIQUE VERIFICATION DES INSTALLATIONS ELECTRIQUES</h1></td>
+</tr>
+</table>
+            <br/><br/>
+		   <table width="100%;" style="border: solid black 1px; ">
+		   <tr>
+  <td style="border-right: solid black 1px;padding:10px">POINTS EXAMINÉS
+Nota - En l'absence de mention de domaine particulier de tension, le point s'applique à tous les domaines de tension.
+</td>  
+<td colspan="4" style="border-right: solid black 1px;padding:10px">VÉRIFICATION INITIALE</td>  
+<td colspan="3" style="padding:10px" >VÉRIFICATION
+PÉRIODIQUE
+</td>
+  </tr>
+      <tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4.1. Prescriptions spécifiques aux installations BT et TBT :
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		<tr>
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4.1.1. Limiteurs de surtension</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4.1.2. Contrôleurs permanents d'isolement
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4.1.3. Dispositifs différentiels à courant résiduel
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>         
+               
+               <tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4.1.4. Dispositifs de coupure à maximum de courant
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style=":10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		
+				<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4.1.5. Isolation double ou renforcée
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+				<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4.1.6. Séparation électrique
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+				<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4.1.7. TBTS -TBTP
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+				<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4.2. Prescriptions spécifiques aux installations HT, coupure au premier défaut, excepté pour les schémas à neutre isolé
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+				<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">C. ― Protections contre les risques de brûlures, d'incendie et d'explosion
+
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+				<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">1. Echauffements anormaux
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">2. Protection contre les surcharges et les courts-circuits
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">3. Pouvoirs de coupure
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">4. Appareillages de sectionnement et de commande -prises de courant BT de courant assigné supérieur à 32 A
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;"></td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">5. Installations où il est fait usage de diélectrique liquide inflammable ou installations renfermant des transformateurs de type sec
+
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		
+				<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">6. Prescriptions spécifiques aux locaux et emplacements à risque d'incendie ou d'explosion
+
+
+
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+				<tr>
+		
+		
+		<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">D. ― Installations d'éclairage de sécurité
+</td>
+	<td style="border-right: solid black 1px;padding:10px; border-top: solid black 1px;">X</td>  
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >X</td>
+<td style="border-right: solid black 1px;padding:10px;padding:10px; border-top: solid black 1px;" >Sauf autonomie</td>
+<td style="padding:10px;padding:10px; border-top: solid black 1px;" ></td>
+
+		</tr>
+		
+		
+  </table>
+</div>
+
+<br/><br/>
+
+
+
+<div style="page-break-before:always;">
+    <table width="100%;" style="border: solid black 1px;">
+<tr>
+<td align="left" style='border-right:solid black 1px;'>
+<apex:image height="80" url="{! IF(Pole == 'Maintenance réseaux', $Resource.Logo_VOLTAIR, IF(Pole == 'DEP', $Resource.Logo_DEP,IF(Pole == 'ETB Ascenseurs', $Resource.Logo_ETB, $Resource.Logo_01Ctrl)))}" alt="Pôle Logo" />
+
+</td>
+<td align="right">
+<h1 style='font-size:16px;text-align:center'>ANNEXE TECHNIQUE VERIFICATION DES INSTALLATIONS ELECTRIQUES</h1></td>
+</tr>
+</table>
+    <br/><br/>
+<span class='art_title'>3.2 Pour les établissements recevant du public</span><br/><br/>
+<span class='art_title2'>3.2.1 - Vérifications réglementaires après travaux (VRAT)</span><br/>
+Vérification ponctuelle d’une installation électrique neuve ou ayant fait l’objet de travaux par un organisme agréé. Cette vérification a pour but de fournir à un maître d’ouvrage ou à un exploitant l’évaluation de la conformité de l’installation électrique après travaux par rapport aux dispositions réglementaires applicables à l’établissement.
+<br/><br/>
+<span class='art_title2'>3.2.2 - Vérifications réglementaires en exploitation (VRE)</span><br/>
+Vérification périodique d’une installation électrique d’un établissement ouvert au public par un organisme agréé. Cette vérification a pour but d’informer l’exploitant de l’état des installations électriques par rapport au risque incendie.
+<br/><br/>
+<span class='art_title2'>3.2.3 - Vérifications périodiques par technicien compétent (VPTC)</span><br/>
+Vérification périodique réalisée par un technicien compétent d’une installation électrique d’un établissement ouvert au public dont le règlement de sécurité contre l’incendie ne prévoit pas la vérification par un organisme agréé. Cette vérification a pour but d’informer l’exploitant de l’état des installations électriques par rapport au risque incendie.
+<br/><br/>
+
+
+<span class='art_title2'>3.2.2 - Etendue et méthodologie des vérifications : </span><br/>
+l’étendue et la méthodologie des vérifications sont fixées aux articles GE7, GE8,
+GE10 et PE4 du règlement de sécurité contre l’incendie relatif aux établissements recevant du public :
+<br/><br/>
+<span class='art_title2'>a) Vérification réglementaire après travaux (VRAT) </span><br/>
+<ul>
+<li>	Examen des documents de conception et d’exécution,</li>
+<li>Examen des PV de classement au feu,</li>
+<li>Examens des attestations et certificats de conformité,</li>
+<li>Examen des plans, schémas et notes de calcul.</li>
+</ul>
+<span class='art_title2'>b) Vérification réglementaire en exploitation (VRE) </span><br/>
+<ul>
+<li>Vérification de l’existence des moyens nécessaire à l’entretien et à la maintenance des installations électriques (techniciens désignés, contrat d’entretien, notices…),</li>
+<li>Vérification du bon fonctionnement des installations de sécurité,</li>
+<li>Vérification de l’existence et du bon fonctionnement, réglage, manœuvre des dispositifs de sécurité,</li>
+<li>Vérification de l’adéquation des installations avec les conditions d’exploitation de l’établissement.</li>
+</ul>
+<span class='art_title2'>c) Vérification périodique par technicien compétent (VPTC) </span><br/>
+<ul>
+<li>Vérification de l’existence des moyens nécessaire à l’entretien et à la maintenance des installations électriques (techniciens désignés, contrat d’entretien, notices…),</li>
+<li>Vérification du bon fonctionnement des installations de sécurité,</li>
+<li>Vérification de l’existence et du bon fonctionnement, réglage, manœuvre des dispositifs de sécurité,</li>
+<li>Vérification de l’adéquation des l’installation avec les conditions d’exploitation de l’établissement.</li>
+
+</ul>
+
+<span class='art_title2'>4 – Résultats - Chaque vérification donne lieu à l’établissement d’un rapport :</span><br/><br/>
+-	Pour les vérifications CONSUEL :
+<ul>
+<li>Sur une installation conforme : fourniture des rapports « résumés de conclusion » et annexe DRE de l’examen de l’installation électrique à remettre à l’organisme CONSUEL pour l’établissement d’une attestation de conformité cerfa ;</li>
+<li>Sur une installation non conforme : fourniture de la liste des réserves sous la forme d’un compte-rendu de visite.</li>
+</ul>
+-	Pour les vérifications, initiales, périodiques, sur demande de l’inspecteur du travail, périodiques 1ère visite :
+<ul>
+<li>Dans les établissements recevant des travailleurs, fourniture d’un rapport conforme à l’arrêté du 26 Décembre 2011 et la lettre circulaire DGT 2012/12 du 09 Octobre 2012, localisant les observations constatées et une solution pour les résoudre ;</li>
+<li>Dans les établissements recevant du public, fourniture d’un rapport d’un établissement recevant des travailleurs complété d’un rapport a part pour la réglementation ERP conforme aux articles GE9, GE10 et appendice du règlement de sécurité contre l’incendie relatif aux établissements recevant du public, localisant les observations constatées et une solution pour les résoudre.</li>
+</ul>
+
+
+
+
+</div>
+<div style="page-break-before:always;">
+    <table width="100%;" style="border: solid black 1px;">
+<tr>
+<td align="left" style='border-right:solid black 1px;'>
+<apex:image height="80" url="{! IF(Pole == 'Maintenance réseaux', $Resource.Logo_VOLTAIR, IF(Pole == 'DEP', $Resource.Logo_DEP,IF(Pole == 'ETB Ascenseurs', $Resource.Logo_ETB, $Resource.Logo_01Ctrl)))}" alt="Pôle Logo" />
+
+</td>
+<td align="right">
+<h1 style='font-size:16px;text-align:center'>ANNEXE TECHNIQUE VERIFICATION DES INSTALLATIONS ELECTRIQUES</h1></td>
+</tr>
+</table>
+    <br/><br/>
+    <span class='art_title2'>5 - Dispositions particulières</span><br/><br/>
+
+<span class='art_title2'>5.1 - Obligations du chef d’établissement</span><br/>
+Le chef d’établissement est tenu de faire vérifier ses installations électriques annuellement avec une carence de plus ou moins de 2 mois. Il doit également faire procéder à la vérification initiale des installations neuves ou ayant subi une modification de structure à comprendre :
+<ul>
+<li>1ère mise en service pour une installation neuve ;</li>
+<li>	Modification du schéma des liaisons de mise à la terre ;</li>
+<li>Modification de la source principale de l’installation ;</li>
+<li>Modification des circuits de distributions ;</li>
+<li>Réaménagement de l’installation électrique.</li>
+</ul>
+Le chef d’établissement doit prendre toutes les dispositions ci-après en vue du bon déroulement de l’intervention.
+<br/><br/>
+<span class='art_title2'>5.2 - Accompagnement de l’intervenant</span><br/>
+Conformément à l’article 6 de l’arrêté du 26/12/11, le chef d’établissement doit mettre à disposition une personne compétente et connaissant bien l’installation électrique du site. Il doit aussi prendre toutes dispositions de façon à laisser un libre accès et rapide à toutes les installations. Le client conserve la direction et la responsabilité des installations, équipements et appareils sur lesquels l’intervenant est appelé à contrôler. Dans le cas ou l’établissement n’aurait pas accès au poste de livraison, il lui appartient de prendre rendez-vous avec le distributeur afin de pouvoir y accéder. Le chef d’établissement doit mettre en œuvre les procédures de façon à faciliter les mises hors tensions et informer l’intervenant sur les circuits dont les coupures sont impossibles.
+Le chef d’établissement doit signaler l’existence des équipements ou matériels sensibles (informatique, serveur, machine...) pour lesquels les mesures et essais seraient susceptibles de conduire à des dysfonctionnements, détérioration.
+<br/><br/>
+<span class='art_title2'>5.3 - Sécurité de l’intervenant - Le chef d’établissement doit :</span>
+<ul>
+<li>Assurer la sécurité de l’intervenant tout au long de la mission ;</li>
+<li>Faire compléter le plan de prévention éventuel ;</li>
+<li>Fournir un plan de sécurité précisant les zones à risques ;</li>
+<li>Fournir tous les moyens d’accès sécurisés aux installations à contrôler.</li>
+</ul>
+
+
+
+
+<span class='art_title2'>5.4 - Limite des prestations</span><br/>
+Les installations dont l’accès en toute sécurité n’a pas été assuré, le matériel inaccessible, les locaux dont l’accès n’a pas été assuré rapidement, les mises hors tensions non autorisées, les mesures dans les locaux à risques d’explosion, les coupures haute tension.
+L’ensemble des points non vérifiés est référencé dans le rapport avec la raison.
+Un complément de vérification pourra être effectué à la demande du chef d’établissement au titre d’une mission complémentaire.
+<br/><br/>
+<span class='art_title2'>5.5 - Missions complémentaires optionnelles</span><br/>
+<ul>
+<li>Vérification pour la délivrance d’un certificat Q18, pour les risques incendie entreprise au sens de la clause 27 A du traité d’assurance ;</li>
+<li>Vérification des installations électriques par thermographie infrarouge avec fourniture d’un certificat Q19 au sens de la clause 27 C du
+traité d’assurance, ou sans certificat pour prévention ;</li>
+<li>Réalisation des schémas unifilaires des armoires électriques ;</li>
+<li>Réalisation de rapports d’exploitations selon demande spécifique ;</li>
+<li>Réalisation de vérification de levée de réserve ;</li>
+<li>Assistance technique.</li>
+</ul>
+<span class='art_title2'>6 - Documents à fournir ou à mettre à disposition du contrôleur</span><br/><br/>
+
+Le dossier technique de l’installation électrique prévu à l’article R.4215-2 du code du travail et arrêté du 20 Avril 2012 relatif au dossier technique des installations électriques des bâtiments destinés à recevoir des travailleurs.
+Les informations suivantes sont exigées par l’arrêté du 26 Décembre 2011, il contribue à la bonne réalisation de la mission :
+<br/><br/>
+<div style="page-break-before:always;"></div>
+1.	Plan des locaux, avec indication des locaux à risques particuliers d'influences externes, particulièrement risque d'incendie et risque d'explosion et, dans ce dernier cas, représentation des différentes zones ;<br/>
+2.	Plan de masse à l'échelle des installations avec implantation des prises de terre et des canalisations électriques enterrées ;<br/>
+3.	Cahier des prescriptions techniques ayant permis la réalisation des installations ;<br/>
+4.	Schémas unifilaires des installations électriques, accompagnés si nécessaire d'un synoptique montrant l'articulation des différents tableaux ;<br/>
+5.	Carnets de câbles ;<br/>
+6.	Notes de calcul justifiant du dimensionnement des canalisations et des dispositifs de protection ;<br/>
+7.	Rapport de vérification initiale et rapports de vérifications périodiques postérieures ;<br/>
+8.	Le cas échéant, déclarations CE de conformité et notices d'instructions des matériels installés dans les locaux ou emplacements à risque d'explosion ;<br/>
+9.	Liste des installations de sécurité et effectif maximal des différents locaux ou bâtiments ;<br/>
+10.	Copie des attestations de conformité établies en application du décret n° 72-1120 du 14 décembre 1972.<br/>
+<br/><br/>
+    
+    
+Complément pour les établissements recevant du public :<br/>
+1.	La notice de sécurité<br/>
+2.	Les plans et renseignements de détail concernant les installations électriques<br/>
+3.	Les prescriptions imposées par le permis de construire<br/>
+4.	L’historique des principales modifications<br/>
+5.	Les prescriptions notifiées à la suite des commissions de sécurité<br/>
+6.	Les PV de classements au feu des matériaux<br/>
+
+</div>
+            
+            
+            
+            </apex:outputPanel>
+               
+                   
+               
+    </body>
+    
+</apex:page>

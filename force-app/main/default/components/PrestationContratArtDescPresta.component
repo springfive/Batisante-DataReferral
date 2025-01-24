@@ -1,0 +1,24 @@
+<apex:component >
+       <apex:attribute name="ArticleNumber" description="Number of the arctive Objet (1 in most case, 3 when context is on)"
+        type="Integer" required="true" />
+    <apex:attribute name="Description" description="Prestation description"
+        type="String" required="true" />
+    <apex:attribute name="Recurrence" description="Triennal or Annuel" type="String" required="true" />
+    <apex:attribute name="nbPassage" description="Number of passages during the period"
+        type="Integer" required="true" />
+    <apex:attribute name="CodeDictNum" description="Num dictionnaire" type="String" />
+    <apex:attribute name="Context" description="Context of prestation" type="String" />
+    
+      {! ArticleNumber } -  <span class="art_title">DESCRIPTIF PRESTATION</span>
+                            
+    <div style="padding-top: 5px; padding-bottom: 5px">
+        <apex:outputText value="{! Description }" escape="false"></apex:outputText>
+    </div>
+     
+    <apex:outputText escape="false" value="{! IF(CodeDictNum !='5383'&& CodeDictNum!= '5382'&&
+                                                                           CodeDictNum!= '5381'&& CodeDictNum!= '5380' ,'Le nombre '+ Recurrence +' de passages sera de : '+ TEXT(nbPassage), '') }"></apex:outputText>
+   
+     
+    
+    <apex:outputText rendered="{! Context == 'Amiante' }"><br /><br />En outre, si DEP est déjà intervenu précédemment afin de réaliser le DTA (Dossier Technique Amiante), son actualisation sera prise en charge par DEP, suite à la surveillance des matériaux et produits contenant de l'amiante.</apex:outputText>
+</apex:component>

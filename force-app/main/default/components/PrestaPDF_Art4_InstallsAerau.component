@@ -1,0 +1,116 @@
+<apex:component >
+    
+    <div  style="page-break-after:always;">
+    <div style='font-size: 13px; margin-bottom: 10px;'>
+        VOLT'AIR prend à sa charge les prestations prévues à l'article II de l'ensemble des installations prévues à l'article III du présent contrat. 
+    </div>
+    <table class="art4_array" width="100%" valign="top" style='font-size: 12px;'>
+            <tr>
+                <td valign="top" width="120"><b>ENTRETIEN DE CAISSONS</b></td>
+                <td>
+                    - Démontage des panneaux et des grilles de refoulement<br />
+                    - Lubrification des parties tournantes <br />
+                    - Vérification de l'état des roulements moteur et turbine<br />
+                    - Nettoyage du caisson et des pales de la volute<br />
+                    - Contrôle de la tension et de l'état des courroies, avec remplacement si nécessaire ou une fois par an (sur VMC Gaz)<br />
+                    - Vérification et serrage des connexions au moteur<br />
+                    - Inversion des moteurs s'il y a lie<br />
+                    - Vérification de l'état des supports anti-vibratiles des caissons et des manchettes souples<br />
+                    - Vérification du disjoncteur de proximité<br />
+                    - Contrôle du pressostat (sur VMC Gaz)<br />
+                    - Test de coupure de chaudière en situation pour essai DSC (sur VMC Gaz)<br />
+                    - Remise en route 
+
+                </td>
+            </tr>
+            <tr>
+                <td valign="top"><b>RAMONAGE &#x26; NETTOYAGE DES BOUCHES </b></td>
+                <td>
+                    <u><b>Parties communes</b><br /> 
+                        Parties horizontales :</u><br /> 
+                    - Démontage des couvercles de souche et des trappes de visite si existantes <br />
+                    - Contrôle étanchéités et corrosion <br />
+                    - Ramonage mécanique par hérisson en nylon <br />
+                    <u>Parties verticales : </u><br />
+                    - Démontage des couvercles de souche et des trappes de visite si existantes <br />
+                    - Ramonage mécanique par hérisson en nylon <br />
+                    - Récupération des poussières par aspiration en pieds de colonnes (si accessible) <br />
+                    <u>Remontage et essais </u><br />
+                    <br />
+                    <u><b>Logements (si prévu à l'Art.III)</b></u><br />
+                    - Démontage et nettoyage des bouches de ventilation situées dans les logements <br />
+                    - Ramonage des conduits de liaison <br />
+                    - Contrôle des emmenées d'air neuf <br />
+                    - Relevé des débits d'air aux bouches d'extraction au point les plus favorisé et le plus défavorisé 
+                </td>
+            </tr>
+            <tr>
+                <td valign="top"><b>EXTRACTEUR PARKING</b></td>
+                <td> 
+                	- Arrêt de l'installation  <br />
+                    - Lubrification des parties tournantes <br />
+                    - Nettoyage des pales de la volutes  <br />
+                    - Nettoyage des grilles en amont et aval du ventilateur selon accessibilité  <br />
+                    - Nettoyage et retrait des gravats dans le plénum en amont du ventilateur  <br />
+                    - Vérification de l'état des roulements moteur et turbine <br />
+                    - Vérification de l'état des supports anti-vibratiles  <br />
+                    - Vérification du disjoncteur de proximité  <br />
+                    - Vérification du fonctionnement de l'interrupteur extérieur au parking utilisé par les pompiers  <br />
+                    - Vérification et serrage des connexions au moteur  <br />
+                    - Remise en route  <br />
+                    <b>Le contrat ne comprend pas :</b> <br />
+                    - Le remplacement de toute pièce défectueuse ou caduque de par son ancienneté ou sa mauvaise utilisation  <br />
+                    - Le dépoussiérage, la décontamination, l'équilibrage des réseaux (*)  <br />
+                    - Les déplacements sur appels d'urgence lorsque la panne n'est pas le fait d'une déficience du matériel due à un défaut d’entretien (**) <br />
+                     <br />
+                    (*) Propositions séparées  <br />
+                    (**) Facturation à part
+
+                </td>
+            </tr>
+         <tr>
+         	<td valign="top" width="120"><b>VENTILATION NATURELLE </b></td>
+         	<td>
+                <b><u>Parties communes</u></b><br />
+                - Ramonage des conduits collectifs <br />
+                - Démontage et remontage des souches, aspirateurs statiques (en terrasse) <br />
+                - Vérification et contrôle de l'état des souches et accessoires <br />
+                - Vérification et contrôle d'absence de nids d'oiseaux (enlèvement si nécessaire) 
+
+            </td>
+         </tr>
+    </table>
+    </div>
+     <table class="art4_array" width="100%" valign="top" style='font-size: 12px;'>
+        
+         <tr>
+             <td >
+                 <b><u>Visite quinquennale (sur VMC Gaz) </u></b><br />
+                 - Contrôle de l'ensemble des bouches d'aération dans les logements<br />
+                 - Prise de débit à la bouche chaudière <br />
+                 - Test de coupure DSC dans chaque logement <br />
+                 - Etablissement d'un quitus pour chaque logement <br />
+                 <b>Le contrat ne comprend pas : </b><br />
+                 - La fourniture et la pose de trappes de visite (en sus 60.00 € HT par trappe) <br />
+                 - Toute intervention hors visite annuelle (sauf VMC Gaz) <br />
+                 - Le retour en atelier et remise en état <br />
+                 - Le remplacement de toute pièce défectueuse ou caduque de par son ancienneté ou sa mauvaise utilisation <br />
+                 - La location d'un moteur de secours <br />
+                 - Toute intervention sur les installations électriques hors installations spécifiques à la VMC <br />
+                 - Le remplacement : du moteur, des manchettes souples, des gaines <br />
+                 - La remise en peinture et étanchéité des gaines horizontales <br />
+                 - La prise des débits (sauf visite quinquennale sur VMC Gaz) <br />
+                 - L'équilibrage des réseaux - Les travaux de réparation ou de gros entretien 
+             </td>
+         </tr>
+          <tr>
+             <td>
+                 VOLT'AIR fera toute diligence pour assurer les dépannages éventuels en dehors de ses visites et s'engage à signaler au client tous les dysfonctionnements constatés. <br /><br />
+                 VOLTAIR ne saurait être inquiétée des arrêts de l'installation rendus nécessaires pour exécuter l'entretien, le dépannage ou les réparations. Elle ne saurait non plus être tenue pour responsable des dommages éventuels causés par ces arrêts. <br /><br />
+                 NOTA: La fourniture d'électricité nécessaire à nos interventions reste à la charge du client
+
+              </td>
+         </tr>
+    </table>
+    
+</apex:component>

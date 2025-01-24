@@ -1,0 +1,58 @@
+<apex:component >
+     <apex:attribute name="Canceled" description="If true, prints 'Annule et Remplace"
+        type="Boolean" required="true"/>
+    <apex:attribute name="Title" description="Title of the PDF"
+        type="String" required="true"/>
+    <apex:attribute name="InstallPrice" description="Title of the PDF"
+        type="Decimal" required="true"/>
+    <apex:attribute name="PoliceSize" description="Taille de la police"
+        type="String" required="true"/>
+    <apex:attribute name="CodeDict" description="Code Client"
+        type="String" required="true"/>
+    <apex:attribute name="PrestaProposition" description="Numéro de proposition"
+        type="String" required="true"/>
+    <apex:attribute name="DevisInfos" description="Information sur le contrat"
+        type="String[]" required="true"/>
+    <apex:attribute name="Pole" description="Pôle associé à la prestation"
+        type="String" required="true"/>
+      <table width="100%">
+          <tr>
+              <td align="left">
+                  <apex:image id="Image" height="80" url="{! IF(Pole == 'Maintenance réseaux', $Resource.Logo_VOLTAIR, IF(Pole == 'DEP', $Resource.Logo_DEP ,IF(Pole == 'ETB Ascenseurs', $Resource.Logo_ETB, $Resource.Logo_01Ctrl)))}" alt="Pôle Logo" />
+              </td>
+              <td>
+                  <table align="right">
+                      <tr>
+                          <td style="font-weight: bold;font-size:10px;text-align:right">
+                              <apex:outputPanel rendered="{! Canceled }">
+                                  (Annule et remplace le précédent contrat)
+                              </apex:outputPanel>
+                          </td>
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+    </table>
+        <table width='100%'>
+            <tr>
+                <td style='font-size:16px;text-align:center'><bold><apex:outputText value="{!Title}" escape="false"></apex:outputText></bold></td>
+            </tr>
+            <tr>
+                
+                <td style='font-size:16px;text-align:center'>  
+                    <apex:outputPanel rendered="{! InstallPrice != 0}">Vente avec maintenance </apex:outputPanel>
+                    <apex:outputPanel rendered="{! Title == 'DIAGNOSTIC TERMITES PREVENTIF'}">Avec <b>garantie sur les états parasitaires en parties communes</b></apex:outputPanel>
+                </td>
+            </tr>
+            
+    </table>
+    <table width="100%">
+        <tr>
+            <td style="{!PoliceSize}">
+                <br/>N/Réf : N° {! CodeDict } / {! PrestaProposition}
+                <br/>V/Réf : {! DevisInfos[0] }
+                <br/>Code Immeuble : <apex:outputLabel value="{!IF(devisInfos.size>4,DevisInfos[4],'')}" /><br/>
+            </td>
+        </tr>
+    </table>
+</apex:component>

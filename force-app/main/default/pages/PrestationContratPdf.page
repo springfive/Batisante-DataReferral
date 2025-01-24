@@ -1,0 +1,1350 @@
+<apex:page applyBodyTag="false" label="Prestation PDF" standardController="Prestation__c" extensions="prestationExtension" renderAs="pdf">
+    <head>
+        <title>Prestation Contrat PDF</title>
+        <style>
+            @page {
+            margin-top: 0.25in !important;
+            margin-bottom: 0.95in !important;
+            margin-left: 0.3in !important;
+            margin-right: 0.3in !important;
+            
+            @bottom-center
+            {
+            content : element(bottom-center-div);
+            }
+            }
+            bold {
+            font-weight: bold;
+            }
+            italic {
+            font-style: italic;
+            }
+            underline {
+            text-decoration: underline;
+            }
+            padding125 {
+            padding-left: 125px;
+            }
+            padding25 {
+            padding-left : 25px;
+            }
+            paddingleft70 {
+            padding-left: 70px;
+            }
+            .bottom-center-div
+            {
+            position: running(bottom-center-div);             
+            height: 60px;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <apex:outputPanel rendered="{! (MissingInfos != '') }">
+            <br /> {! MissingInfos }<br />
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! LotsQuantity==0}">
+            <br />Aucune valeur n’est indiquée dans le/les champs {! ChiffrageNameBlocage }.<br/>Merci de saisir une valeur supérieure à 0 puis régénérer le document.<br/>
+        </apex:outputPanel>
+        <!-- la vérification de la valeur de retour ce cette méthode n'est plus utile, le contrat 2410 ayant été supprimé
+        <apex:outputPanel rendered="{! (!correctPrestationOption)}">
+            <br/> Un contrat de type 2402 doit être associé à ce contrat de type 2410. Merci d'en rajouter un à la proposition à laquelle est relié ce contrat.
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! (MissingInfos == '') && (LotsQuantity != 0)  && (correctPrestationOption)}">
+		-->
+        <div style="page-break-after:always;">
+        <apex:outputPanel rendered="{! (MissingInfos == '') && (LotsQuantity != 0) }">
+            <apex:outputPanel rendered="{! Pole=='Hygiène' }">
+                <table width="100%">
+                    <tr>
+                        <td align="left">
+                            <apex:image id="hygièneImage" height="80" url="{!$Label.Hygiene_Header}" alt="Pôle Logo" />
+                        </td>
+                        <td>
+                            <table align="right">
+                                <tr>
+                                    <td style="font-weight: bold;font-size:10px;text-align:right">
+                                        <apex:outputPanel rendered="{! Canceled }">
+                                            (Annule et remplace le précédent contrat)
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;font-size:16px;text-align:right">
+                                        Contrat de {! CompletePrestaName }
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <table width="100%">
+                    <tr>
+                        <td style="{!PoliceSize}">
+                            <br/>N/Réf. : <bold>N° {! CodeDict } / {! PrestaProposition}</bold><br/>
+                            <bold>PV</bold><br/>
+                            Code Immeuble : <bold><apex:outputLabel value="{!IF(devisInfos.size>4,DevisInfos[4],'')}" /></bold><br/>
+                            Référence Client : <bold>{! DevisInfos[0] }</bold><br/>
+                            Entre les soussignés :<br/>
+                            Concernant l'immeuble : <bold style="padding-left:20px;"><apex:outputText value="{!DevisInfos[1]}" escape="false" /></bold><br/>
+                            représenté par : <bold style="padding-left:100px;">{! DevisInfos[2] }</bold><br/>
+                            <a style="padding-left:178px"></a>{! DevisInfos[3] }<br/><br/>
+                            désigné ci-après et au verso : le "Client" d'une part,<br/>
+                            <apex:outputText value="et la société CHRISTAL ci-dessous référencée, représentée par son dirigeant, désignée, ci-après et au verso : ''Christal'' d'autre part." style="white-space:pre;" escape="false"/>
+                            <apex:outputPanel rendered="{! CodePresta==2104 || CodePresta==2105 || CodePresta==2150 || CodePresta==2151}"><br/></apex:outputPanel>
+                            Il a été exposé et convenu ce qui suit :
+                            <br/>
+                        </td>
+                    </tr>
+                </table>
+                <table width="100%">
+                    <tr>
+                        <td style="{!PoliceSize}" width="100%">
+                            <apex:outputPanel rendered="{! CodePresta==2103 ||CodePresta==2106 }">
+                                <br/><bold style="padding-left:70px;">Article 1</bold><br/>
+                                Le Client déclare souscrire auprès de "Christal" un contrat de dératisation dans les parties communes basses ouvertes et accessibles (sous-sols, parking et RDC) dudit immeuble.<br/>
+                                "Christal" s’engage à effectuer un suivi régulier dans le respect des règles de l’art afin de préserver de la prolifération des rats.<br/><br/>Le présent contrat couvre :<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Audit de mise en place par un technicien certifié biocide,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Rapport de l’audit avec préconisations,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Mise en place de postes d’appâtage,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Visites régulières de suivi de non-prolifération (selon la garantie de moyen de "Christal"),<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Traitements des infestations et rapport de fin d’infestation.<br/>
+                                <br/><bold style="padding-left:70px;">Article 2</bold><br/>
+                                Le présent contrat ne couvrant pas les travaux ou réparations propres à empêcher la pénétration des rats, ni le nettoyage et le débarras des locaux, le Client accepte de donner quitus au Prestataire pour réaliser les travaux liés à l’herméticité à hauteur de 350€ HT par an (la facture sera accompagnée d’un rapport), au-delà de ce montant, le Prestataire devra établir un devis.<input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-right:10px"></a>Oui<a style="padding-left:20px"></a><input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-right:10px"></a>Non<br/>
+                                <br/><bold style="padding-left:70px;">Article 3</bold><br/>
+                                Le contrat ne couvre pas les box ni les caves privatives ni les abords extérieurs de l’immeuble.<br/>
+                                Le Client s’interdit de souscrire auprès d'autres entreprises, durant toute la durée du contrat, des prestations de nature équivalente ou de même destination que celles faisant l’objet du contrat. Toute infraction exonérera le prestataire de sa garantie de moyen.<br/>
+                                <br/><bold style="padding-left:70px;">Article 4</bold><br/>
+                                Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/><bold>Frais de traitement des déchets : 5,90 €</bold><br/>Le nombre annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>Prise d'effet :<br/>
+                                <div style="font-size:10px"><bold>LE CLIENT RECONNAIT AVOIR PRIS CONNAISSANCE DES RÈGLES DE PRÉCONISATIONS ET DE SÉCURITÉ</bold> AINSI QUE DES CGV DU PRESTATAIRE.</div> Le Client s’engage à respecter l’ensemble des obligations mises à sa charge dans le cadre du contrat ci-dessus et, notamment, celles décrites dans les règles de préconisations et de sécurité et les CGV.
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2104 }">
+                                <bold>Article 1</bold><br/>
+                                Le Client déclare souscrire auprès de "Christal" un contrat prévention Rongeurs (surmulots et souris) dans les parties communes basses ouvertes et accessibles (sous-sols, parking et RDC) dudit immeuble et dans les conditions exposées dans les Conditions Générales de Vente et dans les Règles de Précautions et de Sécurité Applicables.<br/>"Christal" s’engage à effectuer un suivi régulier dans le respect des règles de l’art afin de préserver de la prolifération des rongeurs.<br/><br/>
+                                Le présent contrat couvre :<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Audit de mise en place par un technicien certifié biocide,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Rapport de l’audit avec préconisations,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Mise en place de postes d’appâtage,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Visites régulières de suivi de non-prolifération (surveillance standard 2 visites annuelles à adapter en fonction du niveau de risque),<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Traitements des infestations et rapport de fin d’infestation.<br/>
+                                <br/><bold>Article 2</bold><br/>
+                                Le présent contrat ne couvrant pas les travaux ou réparations propres à empêcher la pénétration des rongeurs, ni le nettoyage et le débarras des locaux, le Client accepte de donner quitus au Prestataire pour réaliser les travaux liés à l’herméticité à hauteur de 350€ HT par an (la facture sera accompagnée d’un rapport), au-delà de ce montant, le Prestataire devra établir un devis<a style="padding-left:70px"></a><input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-right:10px"></a>Oui<a style="padding-left:20px"></a><input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-right:10px"></a>Non<br/>
+                                <br/><bold>Article 3</bold><br/>
+                                <table cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="padding-left:40px">Prime annuelle (en totalité au 1er janvier)</td>
+                                        <td style="padding-left:60px"><bold>{! TotalPrice } Euros</bold> hors taxes.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px">Frais de traitement des déchets : 5,90 €</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px">Accès à BatiVision</td>
+                                        <td style="padding-left:60px">Offert</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px">Intervention sans RDV dans le cadre de nos tournées</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px">
+                                            <input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-left:15px;"></a>Option visite sur RDV matin/ après-midi
+                                        </td>
+                                        <td style="padding-left:60px">30€</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px">
+                                            <input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-left:15px;"></a>Option clef syndic
+                                        </td>
+                                        <td style="padding-left:60px">20€</td>
+                                    </tr>
+                                </table>
+                                <br/><bold>Article 4</bold><br/>
+                                Le contrat ne couvre pas les box ni les caves privatives ni les abords extérieurs de l’immeuble.<br/>
+                                Le Client s’interdit de souscrire auprès d'autres entreprises, durant toute la durée du contrat, des prestations de nature équivalente ou de même destination que celles faisant l’objet du contrat. Toute infraction exonérera le prestataire de sa garantie de moyen.<br/>
+                                <br/><bold>Article 5</bold><br/>
+                                Tous les lots dudit immeuble bénéficient d’une remise de 25% sur les tarifs des prestations Lutte Rongeurs en parties privatives.<br/><br/>
+                                <bold>Article 6</bold><br/>Le Client ou son représentant légal, le cas échéant, doit s’assurer que le Prestataire aura un accès aux locaux afin de pouvoir assurer sa prestation et autorise expressément le Prestataire à utiliser tout passe universel lui permettant d’accéder au(x) lieu(x) visé(s) par la prestation.<br/><br/>
+                                <bold>LE CLIENT RECONNAIT AVOIR PRIS CONNAISSANCE DES RÈGLES DE PRÉCONISATIONS ET DE SÉCURITÉ</bold> AINSI QUE DES CGV DU PRESTATAIRE. Le Client s’engage à respecter l’ensemble des obligations mises à sa charge dans le cadre du contrat ci-dessus et, notamment, celles décrites dans les règles de préconisations et de sécurité et les CGV.<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2105 }">
+                                <bold>Article 1 <a style="padding-right:70px;"></a>Objet du contrat</bold><br/>
+                                Le Client déclare souscrire auprès de Christal un contrat Prévention Rongeurs (mulots, surmulots, rats et souris) dans les parties communes basses ouvertes et accessibles (sous-sols, parking et RDC) dudit immeuble.<br/>
+                                L’utilisation permanente de produits toxiques étant désormais bannie, le prestataire met en place dans le cadre d’un contrat annuel des solutions de suivi qui préservent de la prolifération des rongeurs dans les immeubles dont la mise en place d’un poste d’appâtage connecté sur le site. Christal effectue ainsi une surveillance 7j sur 7 et 24H sur 24 des alertes aux postes d’appâtage afin de traiter les infestations en amont. En cas de mauvaise qualité de la connexion, le poste connecté ne sera pas opérationnel.<br/>
+                                Chrisal s’engage à effectuer la prestation dans le respect de la réglementation afin de préserver le site de la prolifération des rongeurs.<br/>
+                                Le présent contrat couvre :<br/>
+                                <ul style="list-style-type: none;margin:0;">
+                                    <li style="padding-left:25px">- Audit de mise en place par un technicien certifié biocide,</li>
+                                    <li style="padding-left:25px">- Rapport de l’audit avec préconisations,</li>
+                                    <li style="padding-left:25px">- Mise en place d’un poste d’appâtage connecté par niveau dans les parties basses, et les parties hautes selon choix du Client</li>
+                                    <li style="padding-left:25px">- Visite de maintenance du matériel.</li>
+                                    <li style="padding-left:25px">- Contrôle des alertes et déclenchement d’interventions d’urgence sur site</li>
+                                    <li style="padding-left:25px">- Traitements des infestations et rapport de fin d’infestation.</li>
+                                    <li style="padding-left:25px">- L’accès à la base de données MyBatisanté, qui met à la disposition du Client tous les documents tels que courriers, devis, factures, rapports d’intervention, sous format pdf</li>
+                                </ul>
+                                Le CLIENT demande à CHRISTAL, qui s’y engage, dans le respect de la Réglementation :
+                                <ul style="list-style-type: none;margin:0;">
+                                    <li style="padding-left:75px">- D’ajuster l’usage des produits rodenticides au seul besoin des locaux</li>
+                                    <li style="padding-left:75px">- D’assurer un suivi du passage des rats, et le déclenchement d’actions correctives ciblées, seulement quand elles sont nécessaires</li>
+                                    <li style="padding-left:75px">- De produire chaque année un rapport de suivi du passage de rats dans les locaux</li>
+                                </ul>
+                                <bold>Article 2 <a style="padding-right:70px;"></a>Travaux liés à l'herméticité des locaux</bold><br/>
+                                Le présent contrat ne couvrant pas les travaux ou réparations propres à empêcher la pénétration des rongeurs, ni le nettoyage et le débarras des locaux, le Client accepte de donner quitus au Prestataire pour réaliser les travaux liés à l'herméticité à hauteur de 350€ HT par an (la facture de travaux sera accompagnée d’un rapport d\'intervention), au-delà de ce montant, le Prestataire devra établir un devis soumis à l’approbation du Client.<input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-right:10px"></a>Oui<a style="padding-left:20px"></a><input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-right:10px"></a>Non<br/>
+                                <bold>Article 3 <a style="padding-right:70px;"></a>Prime annuelle</bold>
+                                <table>
+                                    <tr>
+                                        <td width="50%">
+                                            <bold><italic>Description et situation des postes connectés.</italic></bold><br/>
+                                            <bold>Christal Box </bold>Redevance Contrat<br/>
+                                            <bold>Christal Box </bold>Redevance par Cage supplémentaire<br/><bold>Christal Box </bold>Redevance par poste(s) connecté(s) supplémentaire(s)<br/>
+                                            <bold>(En option)</bold>
+                                        </td>
+                                        <td style="padding-left: 150px;" width="50%"><bold><italic>Qté<a style="padding-right: 20px;"></a>Tarif</italic></bold><br/>
+                                            <bold style="padding-right: 25px"><apex:outputLabel value="{!IF(LotsQuantityDetails[0]>0,1,0)}" /></bold>248,85€ HT<br/>
+                                            <bold style="padding-right: 25px"><apex:outputLabel value="{!IF(LotsQuantityDetails[0]>1,LotsQuantityDetails[0]-1,0)}" /></bold>126€ HT<br/>
+                                            <bold style="padding-right: 25px">{! LotsQuantityDetails[1] }</bold>110,25€ HT<br/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <bold style="padding-right: 328px">Accès à MyBatisanté</bold>Offert<br/>
+                                <bold style="padding-left:60px;">Total postes connectés Christal Box</bold>
+                                <bold style="padding-left: 201px">{! LotsQuantity }</bold><br/>
+                                <a style="padding-left: 60px"></a>Nombre de cages couvertes (Y compris parkings, sous sols, étages, combles)<bold style="padding-left:63px">{! LotsQuantityDetails[0] }</bold><br/>
+                                <bold style="padding-left:60px;">Prime annuelle</bold><bold style="padding-left:281px">{! TotalPrice } Euros</bold> hors taxes.<br/>
+                                <bold style="padding-left:60px;">Nombre de passage annuel</bold><bold style="padding-left:281px">{! PassageFrequency }</bold><br/>
+                                <italic style="padding-left:60px">(facturation à la signature du contrat pour la première année puis ensuite au 1er janvier)</italic><br/>
+                                <bold>Article 4 <a style="padding-right:70px;"></a>Limitations</bold><br/>
+                                Le contrat ne couvre pas les box ni les caves privatives ni les abords extérieurs de l’immeuble.<br/>
+                                Le Client s’interdit de souscrire auprès d'autres entreprises, durant toute la durée du contrat, des prestations de nature équivalente ou de même destination que celles faisant l’objet du contrat. Toute infraction exonérera le prestataire de sa garantie de moyen.<br/>
+                                Le poste d’appâtage connecté est la propriété de Christal, il ne doit pas être déplacé ou détérioré. En cas de vol ou dégradation, le poste d’appâtage sera facturé au client 200€ TTC.<br/>
+                                Le poste d’appâtage sera récupéré par Christal à la fin du contrat et pourra être démonté en cas de retard de paiement par le Client.<br/>
+                                <bold>Article 5 <a style="padding-right:70px;"></a>Avantages particuliers</bold><br/>
+                                Tous les lots dudit immeuble bénéficient d’une remise de 25% sur les tarifs des prestations Lutte Rongeurs en parties privatives.<br/>
+                                <bold>Article 6 <a style="padding-right:70px;"></a>Règles de précautions et de sécurité applicables</bold><br/>
+                                <bold>LE CLIENT RECONNAIT AVOIR PRIS CONNAISSANCE DES RÈGLES DE PRÉCONISATIONS ET DE SÉCURITÉ</bold> AINSI QUE DES CGV DU PRESTATAIRE. Le Client s’engage à respecter l’ensemble des obligations mises à sa charge dans le cadre du contrat ci-dessus et, notamment, celles décrites dans les règles de préconisations et de sécurité et les CGV.
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2223 || CodePresta==2224}">
+                                <italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le Client déclare souscrire auprès de Christal un contrat de dessourisation dans les parties communes basses ouvertes et accessibles (sous-sols, parking et RDC) dudit immeuble et dans les conditions exposées dans les Conditions Générales de Vente et dans les Règles de Précautions et de Sécurité Applicables.<br/>
+                                Christal s’engage à effectuer un suivi régulier dans le respect des règles de l’art afin de préserver la prolifération des souris.<br/>
+                                <div style="padding-top:4px"></div>Le présent contrat couvre :<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Audit de mise en place par un technicien certifié biocide,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Rapport de l’audit avec préconisations,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Mise en place de postes d’appâtage,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Traitements des infestations et rapport de fin d’infestation.<br/>
+                                <br/><italic style="padding-left:70px;">Article 2</italic><br/>
+                                Le présent contrat ne couvrant pas les travaux ou réparations propres à empêcher la pénétration des souris, ni le nettoyage et le débarras des locaux, le Client accepte de donner quitus au Prestataire pour réaliser les travaux liés à l’herméticité à hauteur de 350€ HT par an (la facture sera accompagnée d’un rapport), au-delà de ce montant, le Prestataire devra établir un devis.<br/>
+                                <br/><italic style="padding-left:70px;">Article 3</italic><br/>
+                                Le contrat ne couvre pas les box ni les caves privatives ni les abords extérieurs de l’immeuble.<br/>
+                                Le Client s’interdit de souscrire auprès d\'autres entreprises, durant toute la durée du contrat, des prestations de nature équivalente ou de même destination que celles faisant l’objet du contrat. Toute infraction exonérera le prestataire de sa garantie de moyen.<br/>
+                                <div style="padding-top:4px"></div>Garantie : "Christal" s'engage à intervenir gratuitement à la demande du "Client" ou du gardien pour obtenir l'élimination complète des souris à l'immeuble sus-désigné.<br/>
+                                <br/><italic style="padding-left:70px;">Article 4</italic><br/>
+                                Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <bold>Frais de traitement des déchets : 5,90 €</bold><br/>
+                                Le nombre annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                Prise d'effet :<br/>
+                                <br/><italic style="padding-left:70px;">Article 5</italic><br/>
+                                Tous les lots dudit immeuble bénéficient d’une remise de 25% sur les tarifs des prestations Lutte Souris en parties privatives.<br/>
+                                <br/><italic style="padding-left:70px;">Article 6</italic><br/>
+                                Le Client ou son représentant légal, le cas échéant, doit s’assurer que le Prestataire aura un accès aux locaux afin de pouvoir assurer sa prestation et autorise expressément le Prestataire à utiliser tout passe universel lui permettant d’accéder au(x) lieu(x) visé(s) par la prestation.<br/><br/>
+                                <div style="font-size:10px;"><bold>LE CLIENT RECONNAIT AVOIR PRIS CONNAISSANCE DES RÈGLES DE PRÉCONISATIONS ET DE SÉCURITÉ</bold> AINSI QUE DES CGV DU PRESTATAIRE.</div> Le Client s’engage à respecter l’ensemble des obligations mises à sa charge dans le cadre du contrat ci-dessus et, notamment, celles décrites dans les règles de préconisations et de sécurité et les CGV.<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2252 || CodePresta==2253 }">
+                                <br/><italic style="padding-left:70px;">Article 1</italic><br/><br/>
+                                Le "Client" déclare souscrire auprès de "Christal" un contrat de dessourisation des parties communes et parties privatives dudit immeuble, dans les conditions ci-après et au verso fixées, moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur).<br/>
+                                Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <italic style="padding-left:70px;">Exclusion</italic><br/>
+                                Le présent contrat ne garantit ni les travaux ou réparations propres à empêcher la pénétration des souris, ni le nettoyage ou le débarras des locaux. "Christal" ne pourra être responsable de la présence de souris en milieu insalubre ou dans les endroits inaccessibles.<br/>
+                                <br/><br/><italic style="padding-left:70px;">Article 2</italic><br/><br/>
+                                "Christal" s'engage à effectuer la dessourisation par application de produits souricides aux endroits appropriés. "Christal" effectue cette prestation lors d'une visite de prise en charge ; les occupants en seront prévenus par des avis affichés dans les halls, 15 jours au préalable.<br/>
+                                Au delà de ce passage, les interventions feront l'objet d'une facturation ponctuelle.<br/>
+                                L'annexe 1 détermine le nombre annuel de passages ainsi que les lieux traités.<br/>
+                                <br/><underline>Annexe 1 :</underline> Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <bold>Frais de traitement des déchets : 5,90€</bold><br/><br/>
+                                <padding125/>Le nombre annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <padding125/>Lieux traités : <bold>{! LotsDetailPCPP }</bold><br/>
+                                <padding125/>(A=Appartement - C=Chambre - L=Loge - LC=Local Commercial)<br/>
+                                <padding125/>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2302 || CodePresta==2303}">
+                                <br/><italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le "Client" déclare souscrire auprès de "Christal" un contrat de désinsectisation préventive des parties communes dudit immeuble, dans les conditions ci-après et au verso fixées, moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur).<br/>
+                                Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <italic style="padding-left:70px;">Exclusion</italic><br/>
+                                Le présent contrat ne garantit ni la destruction des xylophages et insectes non rampants, ni le nettoyage ou le débarras des locaux. "Christal" ne pourra être responsable de la présence d'insectes en milieu insalubre ou dans les endroits inaccessibles.<br/>
+                                <br/><italic style="padding-left:70px;">Article 2</italic><br/>
+                                "Christal" s'engage à effectuer la désinsectisation (cafards, blattes, lépismes) de toutes les parties communes propices à l'infestation par pulvérisation de produits spécifiques.<br/>
+                                Ce contrat offre une garantie totale en parties communes.<br/>
+                                L'annexe 1 détermine le nombre annuel de passages ainsi que les lieux traités.<br/>
+                                <br/><italic style="padding-left:70px;">Article 3</italic><br/>
+                                En cas de désinsectisation générale, ce contrat permet au "Client" de bénéficier d'une remise de 25 % sur toutes les interventions en parties privatives.<br/>
+                                Descriptif de l'intervention de l'article 3 : acheminement au gardien des avis de passage pour affichage dans les halls, 15 jours au préalable ; désinsectisation de tous les appartements, chambres et traitement renouvelé aux parties communes. Garantie 1 an : "Christal" interviendra à la demande du "Client" ou du gardien dans les lieux traités où la présence d'insectes serait encore signalée et ce, dans la mesure où "Christal" n'aura rencontré aucune entrave à l'exercice de la première prestation de désinsectisation en parties privatives.<br/>
+                                <br/><underline>Annexe 1 :</underline> Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/><br/>
+                                <padding125/>Le nombre annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <padding125/>Lieux traités : <bold>Parties communes</bold><br/>
+                                <padding125/>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2310 }">
+                                <br/><italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le "Client" déclare souscrire auprès de "Christal" un contrat de désinsectisation préventive des parties communes dudit immeuble, dans les conditions ci-après et au verso fixées, moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur).<br/>
+                                Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <italic style="padding-left:70px;">Exclusion</italic><br/>
+                                Le présent contrat ne garantit ni la destruction des xylophages et insectes non rampants, ni le nettoyage ou le débarras des locaux. "Christal" ne pourra être responsable de la présence d'insectes en milieu insalubre ou dans les endroits inaccessibles.<br/>
+                                <br/><italic style="padding-left:70px;">Article 2</italic><br/>
+                                "Christal" s'engage à effectuer la désinsectisation (cafards, blattes, lépismes) de toutes les parties communes propices à l'infestation par pulvérisation de produits spécifiques.<br/>
+                                Garantie totale en parties communes et parties privatives : en cas de présence de blattes, dans les parties privatives de l'immeuble, "Christal" s'engage à intervenir gratuitement à la demande du "Client" ou du gardien dans les parties désignées par leurs soins. Si l'infestation persiste, "Christal" effectuera à la demande du "Client" ou du gardien, un traitement général de l'immeuble.<br/>
+                                L'annexe 1 détermine le nombre annuel de passages ainsi que les lieux traités.<br/>
+                                <br/><underline>Annexe 1 :</underline> Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <bold>Frais de traitement des déchets : 5,90€</bold><br/><br/>
+                                <padding125/>Le nombre annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <padding125/>Lieux traités : <bold>Parties communes</bold><br/>
+                                <padding125/>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2322 || CodePresta==2323}">
+                                <br/><italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le "Client" déclare souscrire auprès de "Christal" un contrat de désinsectisation des parties communes et parties privatives dudit immeuble, dans les conditions ci-après et au verso fixées, moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur).<br/>
+                                Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <italic style="padding-left:70px;">Exclusion</italic><br/>
+                                Le présent contrat ne garantit ni la destruction des xylophages et insectes non rampants, ni le nettoyage ou le débarras des locaux. "Christal" ne pourra être responsable de la présence d'insectes en milieu insalubre ou dans les endroits inaccessibles.<br/><br/>
+                                <italic style="padding-left:70px;">Article 2</italic><br/>
+                                "Christal" s'engage à effectuer la désinsectisation (cafards, blattes, lépismes) des lieux traités par pulvérisation, nébulisation ou simple application au pinceau ou au pistolet de produits spécifiques, selon les cas à traiter. "Christal" effectue cette prestation lors d'une visite de prise en charge ; les occupants en seront prévenus par des avis affichés dans les halls, 15 jours au préalable.<br/>
+                                Garantie : "Christal" interviendra à la demande du "Client" ou du gardien dans les lieux traités où la présence d'insectes serait encore signalée et ce, dans la mesure où "Christal" n'aura rencontré aucune entrave à l'exercice de la première prestation lors de sa prise en charge.<br/>
+                                L'annexe 1 détermine le nombre annuel de passages ainsi que les lieux traités.<br/><br/>
+                                <underline>Annexe 1 :</underline> Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/><bold>Frais de traitement des déchets : 5,90€</bold><br/><br/>
+                                <padding125/>Le nombre annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <padding125/>Lieux traités : <bold>{! LotsDetailPCPP }</bold><br/>
+                                <padding125/>(A=Appartement - C=Chambre - L=Loge - LC=Local Commercial)<br/>
+                                <padding125/>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2402 }">
+                                <br/><italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le "Client" déclare souscrire auprès de "Christal" un contrat de désinfection des colonnes vide-ordures dudit immeuble, dans les conditions ci-après et au verso fixées, moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur).<br/>
+                                Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <italic style="padding-left:70px;">Exclusion</italic><br/>
+                                Le présent contrat ne garantit ni les réparations mécaniques ou les travaux à effectuer sur les parois, vidoirs et trémies, ni les dégorgements, ni le nettoyage et le débarras des locaux.<br/>
+                                <br/><italic style="padding-left:70px;">Article 2</italic><br/>
+                                "Christal" s'engage à effectuer la désinfection et le nettoyage des colonnes vide-ordures de l'immeuble sus-désigné, soit:<br/>
+                                <paddingleft70/>- nettoyage des parois, vidoirs et trémies par traitement hydrodynamique,<br/>
+                                <paddingleft70/>- désinfection par diffusion d'un produit germicide, bactéricide et odorisant.<br/>
+                                "Christal" ne sera pas responsable des dégâts occasionnés par le mauvais état des colonnes ou des vidoirs.<br/>
+                                "Christal" garantit la conformité des travaux à l'Article 79 du Règlement Sanitaire Type du 9 Août 78.<br/>
+                                L'annexe 1 détermine le nombre annuel de passages et le nombre de colonnes concernées.<br/>
+                                <br/><underline>Annexe 1 :</underline> Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <padding125/>Le nombre annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <padding125/>Nombre de colonnes : <bold>{! LotsQuantityOrderedByName[0] }</bold> Nombre de niveaux : <bold>{! LotsQuantityOrderedByName[1] }</bold><br/>
+                                <padding125/>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2410 }">
+                                <italic>Article 1</italic><br/>
+                                Le "Client" déclare souscrire auprès de "Christal" un contrat de désinfection des colonnes vide-ordures dudit immeuble, dans les conditions ci-après et au verso fixées, moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur).<br/>
+                                Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                Exclusion<br/>
+                                Le présent contrat ne garantit ni les réparations mécaniques ou les travaux à effectuer sur les parois, vidoirs et trémies, ni les dégorgements, ni le nettoyage et le débarras des locaux.<br/>
+                                <br/><italic>Article 2</italic><br/>
+                                "Christal" s'engage à effectuer la désinfection et le nettoyage des colonnes vide-ordures de l'immeuble sus-désigné, soit :<br/>
+                                - nettoyage des parois, vidoirs et trémies par traitement hydrodynamique,<br/>
+                                - désinfection par diffusion d'un produit germicide, bactéricide et odorisant<br/>
+                                "Christal" ne sera pas responsable des dégâts occasionnés par le mauvais état des colonnes ou des vidoirs.<br/>
+                                "Christal" garantit la conformité des travaux à l'Article 79 du Règlement Sanitaire Type du 9 Août 78.<br/>
+                                L'annexe 1 détermine le nombre annuel de passages et le nombre de colonnes concernées.<br/>
+                                <br/><underline>Annexe 1 :</underline> Le montant de la prime <bold>Prestations2410Infos[0]</bold> sera de : <bold>Prestations2410Infos[1] Euros</bold> hors taxes.<br/>
+                                Le nombre annuel de passages sera de : <bold>Prestations2410Infos[2]</bold><br/>
+                                Nombre de colonnes : <bold>Prestations2410Infos[3]</bold> Nombre de niveaux : <bold>Prestations2410Infos[4]</bold><br/>
+                                Prise d'effet :<br/>
+                                <br/>o Option blanchiment<br/>
+                                En cas d'acceptation par le client, "Christal" effectuera, tous les 3 ans, un blanchiment des locaux vide-ordures selon des méthodes novatrices (brumisation de peinture en couches croisées).<br/>
+                                Le montant de la prestation sera de : <bold>Prestations2410Infos[5] Euros</bold> hors taxes.<br/>
+                                Nombre de locaux : <bold>Prestations2410Infos[6]</bold>.<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2923 }">
+                                <br/><italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le "Client" déclare souscrire auprès de "Christal" un contrat de désinfection des colonnes vide-ordures et des pelles palières dudit immeuble dans les conditions ci-après et au verso fixées moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur).<br/>
+                                Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <italic style="padding-left:70px;">Exclusion</italic><br/>
+                                Le présent contrat ne garantit ni les réparations mécaniques ou les travaux à effectuer sur les parois, vidoirs et trémies, ni les dégorgements, ni le nettoyage et le débarras des locaux.<br/>
+                                <br/><italic style="padding-left:70px;">Article 2</italic><br/>
+                                "Absa Christal" s'engage à effectuer la désinfection et le nettoyage des colonnes vide-ordures aux sites sus-désignés, soit :<br/>
+                                - nettoyage des parois, vidoirs et trémies par traitement hydrodynamique,<br/>
+                                - désinfection par diffusion d'un produit germicide, bactéricide et odorisant.<br/>
+                                D'autre part "Christal" s'engage à effectuer le nettoyage des pelles palières à l'eau, à l'aide d'une éponge double face et à procéder à l'application d'un produit désinfectant et odorisant.<br/>
+                                "Christal" ne sera pas responsable des dégâts occasionnés par le mauvais état des colonnes ou des vidoirs.<br/>
+                                "Christal" garantit la conformité des travaux à l'Article 79 du Règlement Sanitaire Type du 9 Août 78.<br/>
+                                L'annexe 1 détermine le nombre annuel de passages, le nombre de colonnes et de pelles palières concernées.<br/>
+                                <br/><underline>Annexe 1 :</underline> Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <padding125/>Désinfection vide-ordures : le nombre annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <padding125/>Nombre de colonnes : <bold>{! LotsQuantityOrderedByName[0] }</bold> Nombre de niveaux : <bold>{! LotsQuantityOrderedByName[1] }</bold><br/>
+                                <padding125/>Pelles palières : le nombre de annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <padding125/>Nombre total de pelles palières : <bold>{! LotsQuantityOrderedByName[2] }</bold><br/>
+                                <padding125/>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2005 }">
+                                <br/><italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le « Client » déclare souscrire auprès de "Christal" un contrat de pompage de fosse(s) septique(s) dudit immeuble dans les conditions ci-après et au verso fixées moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur). Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <br/><italic style="padding-left:70px;">Article 2</italic><br/>
+                                "Christal" s’engage à effectuer une opération de pompage, assainissement de fosse(s) septique(s).<br/>
+                                <br/><underline><bold>Art.30 du règlement sanitaire : ouvrage d’assainissement</bold></underline><br/>
+                                Pour les fosses de relevage à usage collectif comme pour les dispositifs relevant d’un type spécial ou comportant un poste de relevage, leur visite périodique et leur entretien seront effectués au moins une fois par an et les justifications de ces opérations devront être tenues à la disposition des autorités sanitaires.<br/>
+                                <bold><italic>Réserves :</italic></bold> Ne sont pas à charge les réparations de ces installations. Dans le cas où l'administration exigerait un traitement des déchets recueillis lors de notre intervention, il sera facturé un supplément sur la base du barème de prix, de l'organisme agrée à cet effet. Ces prix sont applicables pour tous les travaux dans un délai de 2 mois, travaux réalisés pendant les heures ouvrables (entre 8 h et 17h) du lundi au vendredi. Nous vous rappelons que l’accès aux fosses, regards, canalisations et autres installations est sous la responsabilité du client qui devra s’assurer, avant toute intervention, des ouvertures et de prévoir le descellement des plaques. Le passage de nos véhicules devra également être assuré, et nous signaler à l’avance les aires de circulation impropres au camion de 20 tonnes. Si besoin est, le client devra signaler les anomalies concernant la nature des interventions, du produit, du site ou de son environnement (article R 237-8 du Code du Travail).<br/>
+                                <br/>L'annexe 1 détermine le nombre de passages.<br/>
+                                <br/><underline style="padding-right:50px">Annexe 1 :</underline>Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <a style="padding-left:103px"></a>Le nombre <bold>annuel</bold> de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <bold style="padding-left:103px">Fosse(s) septique(s) : {! LotsQuantity } M3</bold><br/>
+                                <a style="padding-left:103px"></a>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2015 }">
+                                <br/><italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le « Client » déclare souscrire auprès de "Christal" un contrat de pompage de fosse hydro carbure dudit immeuble dans les conditions ci-après et au verso fixées moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur). Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <br/><italic style="padding-left:70px;">Article 2</italic><br/>
+                                "Christal" s’engage à effectuer une opération de pompage, assainissement de la fosse hydro carbure.<br/>
+                                <br/><underline><bold>Art.30 du règlement sanitaire : ouvrage d’assainissement</bold></underline><br/>
+                                Pour les fosses de relevage à usage collectif comme pour les dispositifs relevant d’un type spécial ou comportant un poste de relevage, leur visite périodique et leur entretien seront effectués au moins une fois par an et les justifications de ces opérations devront être tenues à la disposition des autorités sanitaires.<br/>
+                                <bold><italic>Réserves :</italic></bold> Ne sont pas à charge les réparations de ces installations. Dans le cas où l'administration exigerait un traitement des déchets recueillis lors de notre intervention, il sera facturé un supplément sur la base du barème de prix, de l'organisme agrée à cet effet. Ces prix sont applicables pour tous les travaux dans un délai de 2 mois, travaux réalisés pendant les heures ouvrables (entre 8 h et 17h) du lundi au vendredi. Nous vous rappelons que l’accès aux fosses, regards, canalisations et autres installations est sous la responsabilité du client qui devra s’assurer, avant toute intervention, des ouvertures et de prévoir le descellement des plaques. Le passage de nos véhicules devra également être assuré, et nous signaler à l’avance les aires de circulation impropres au camion de 20 tonnes. Si besoin est, le client devra signaler les anomalies concernant la nature des interventions, du produit, du site ou de son environnement (article R 237-8 du Code du Travail).<br/>
+                                <br/>L'annexe 1 détermine le nombre de passages.<br/>
+                                <br/><underline style="padding-right:50px">Annexe 1 :</underline>Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <a style="padding-left:103px"></a>Le nombre <bold>annuel</bold> de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <bold style="padding-left:103px">Fosse(s) hydro carbure : {! LotsQuantity } M3</bold><br/>
+                                <a style="padding-left:103px"></a>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2025 }">
+                                <br/><italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le « Client » déclare souscrire auprès de "Christal" un contrat de pompage de bac(s) à graisse dudit immeuble dans les conditions ci-après et au verso fixées moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur). Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <br/><italic style="padding-left:70px;">Article 2</italic><br/>
+                                "Christal" s’engage à effectuer une opération de pompage, assainissement de bac(s) à graisse.<br/>
+                                <br/><underline><bold>Art.30 du règlement sanitaire : ouvrage d’assainissement</bold></underline><br/>
+                                Pour les fosses de relevage à usage collectif comme pour les dispositifs relevant d’un type spécial ou comportant un poste de relevage, leur visite périodique et leur entretien seront effectués au moins une fois par an et les justifications de ces opérations devront être tenues à la disposition des autorités sanitaires.<br/>
+                                <bold><italic>Réserves :</italic></bold> Ne sont pas à charge les réparations de ces installations. Dans le cas où l'administration exigerait un traitement des déchets recueillis lors de notre intervention, il sera facturé un supplément sur la base du barème de prix, de l'organisme agrée à cet effet. Ces prix sont applicables pour tous les travaux dans un délai de 2 mois, travaux réalisés pendant les heures ouvrables (entre 8 h et 17h) du lundi au vendredi. Nous vous rappelons que l’accès aux fosses, regards, canalisations et autres installations est sous la responsabilité du client qui devra s’assurer, avant toute intervention, des ouvertures et de prévoir le descellement des plaques. Le passage de nos véhicules devra également être assuré, et nous signaler à l’avance les aires de circulation impropres au camion de 20 tonnes. Si besoin est, le client devra signaler les anomalies concernant la nature des interventions, du produit, du site ou de son environnement (article R 237-8 du Code du Travail).<br/>
+                                <br/>L'annexe 1 détermine le nombre de passages.<br/>
+                                <br/><underline style="padding-right:50px">Annexe 1 :</underline>Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <a style="padding-left:103px"></a>Le nombre <bold>annuel</bold> de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <bold style="padding-left:103px">Bac(s) à graisse : {! LotsQuantity } M3</bold><br/>
+                                <a style="padding-left:103px"></a>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2035 }">
+                                <br/><italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le « Client » déclare souscrire auprès de "Christal" un contrat de pompage de fosse(s) de relevage dudit immeuble dans les conditions ci-après et au verso fixées moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur). Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <br/><italic style="padding-left:70px;">Article 2</italic><br/>
+                                "Christal" s’engage à effectuer une opération de pompage, assainissement de fosse(s) de relevage.<br/>
+                                <br/>Le vérificateur s'engage en cas d'arrêt des appareils, arrêt qui lui sera signalé, à faire diligence pour assurer le dépannage les jours ouvrables et à envoyer sur place, dans ce but, le personnel compétent sans accepter toutefois aucune responsabilité pour les conséquences que peut entraîner l'arrêt des appareils (dommages intérêts, ni indemnités d'aucune sorte).<br/>
+                                L'obligation d'intervenir ne signifie pas obligatoirement la remise en service de l'installation en panne. Ces dépannages ne sont pas compris dans ce contrat et feront l'objet d'une facturation supplémentaire.<br/>
+                                Les installations sont supposées être en bon état de fonctionnement et de réglage lors de la prise en charge.<br/>
+                                Dans le cas où une usure ou une détérioration des pièces seraient constatées par le vérificateur, celui-ci informera immédiatement le responsable de l'installation, et établira un devis de remise en état.<br/>
+                                Ces travaux seront exécutés après accord du responsable (par ordre de service ou bon de commande) et seront facturés séparément, hors contrat.<br/>
+                                <br/><underline><bold>Art.30 du règlement sanitaire : ouvrage d’assainissement</bold></underline><br/>
+                                Pour les fosses de relevage à usage collectif comme pour les dispositifs relevant d’un type spécial ou comportant un poste de relevage, leur visite périodique et leur entretien seront effectués au moins une fois par an et les justifications de ces opérations devront être tenues à la disposition des autorités sanitaires.<br/>
+                                <bold><italic>Réserves :</italic></bold> Ne sont pas à charge les réparations de ces installations.<br/>
+                                Dans le cas où l'administration exigerait un traitement des déchets recueillis lors de notre intervention, il sera facturé un supplément sur la base du barème de prix, de l'organisme agrée à cet effet. Ces prix sont applicables pour tous les travaux dans un délai de 2 mois, travaux réalisés pendant les heures ouvrables (entre 8 h et 17h) du lundi au vendredi. Nous vous rappelons que l’accès aux fosses, regards, canalisations et autres installations est sous la responsabilité du client qui devra s’assurer, avant toute intervention, des ouvertures et de prévoir le descellement des plaques. Le passage de nos véhicules devra également être assuré, et nous signaler à l’avance les aires de circulation impropres au camion de 20 tonnes. Si besoin est, le client devra signaler les anomalies concernant la nature des interventions, du produit, du site ou de son environnement (article R 237-8 du Code du Travail).<br/>
+                                <br/>L'annexe 1 détermine le nombre de passages.<br/>
+                                <table style="width:100%">
+                                    <tr>
+                                        <td style="font-size:12px">
+                                            <br/><underline style="padding-right:50px">Annexe 1 :</underline>Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                            <a style="padding-left:103px"></a>Le nombre <bold>annuel</bold> de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                            <a style="padding-left:103px"></a>Fosse(s) de relevage : <bold>{! LotsQuantity } M3</bold><br/>
+                                            <a style="padding-left:103px"></a>Prise d'effet :
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2810 }">
+                                <italic style="padding-left:25px">Article 1</italic><br/>
+                                Le "Client" déclare souscrire auprès de "Christal" un contrat de traitement biologique des canalisations d’eaux usées dudit immeuble, dans les conditions ci-après et au verso fixées, moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur).<br/>
+                                Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <br/><italic style="padding-left:25px">Article 2</italic><br/>
+                                "Christal" s'engage à effectuer le traitement des canalisations d’eaux usées en parties privatives. Ce traitement est réalisé :<br/>
+                                <bold>Année 1 :</bold> Prestation de curage hydrodynamique sur les pieds de chute assortie d’un traitement biologique en parties privatives.<br/>
+                                L’intervention biologique est réalisée tous les deux niveaux, dans toutes les pièces d’eau (salle de bains, toilettes, cuisine, ...) ;<br/>
+                                "Christal" informera, par voie d’affichage, la copropriété quinze jours avant la date d’intervention.<br/>
+                                <bold>Années suivantes :</bold> "Christal" effectuera le traitement biologique du site, avec affichage avant intervention.<br/>
+                                <br/><italic>CLAUSES RESTRICTIVES</italic><br/>
+                                "Christal" décline toute responsabilité en cas de fuite ou de dégradations diverses, si canalisations fêlées, cassées ou avec présence de racine dans le collecteur. Le présent contrat ne prévoit pas :<br/>
+                                - Les interventions au-delà d’une par trimestre,<br/>
+                                - Les dégorgements en cas d’utilisation non conforme ou d’actes de malveillance (présence de textile, gravats...)<br/>
+                                - Les interventions de dégorgement sur les raccordements privatifs des appartements (et/ou chambres, LC...) au réseau commun.<br/>
+                                L’accès aux fosses, regards, canalisations et autres installations est sous la responsabilité du client, qui devra s’assurer, avant toute intervention, des ouvertures et de prévoir le descellement des plaques.<br/>
+                                <br/><italic>GARANTIE (PRESTATION HYDRODYNAMIQUE)</italic><br/>
+                                "Christal" s'engage à intervenir, pour une durée de 1 an, gratuitement à la demande du client à l'immeuble sus-désigné, 7 jours sur 7, 24 heures sur 24 y compris les jours fériés.<br/>
+                                L'annexe 1 détermine le nombre annuel de passages ainsi que les lieux traités.<br/>
+                                <br/><underline style="padding-right: 69px">Annexe 1 :</underline> Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <padding125/>Le nombre annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <padding125/>Lieux traités : <bold>{! LotsDetailPCPP }</bold><br/>
+                                <padding125/>(A=Appartement - C=Chambre - L=Loge - LC=Local Commercial)<br/>
+                                <padding125/>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2843 }">
+                                <italic>OBJET</italic><br/>
+                                Le Client déclare souscrire auprès de "Christal" un contrat de curage général hydrodynamique des canalisations du réseau parking de l'immeuble. La prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur), le nombre annuel de passages est fixé dans le paragraphe "Prime". Les conditions du contrat sont notifiées ci-après et au verso.<br/>
+                                <br/><italic style="font-weight:bold">Intervention :</italic><br/>
+                                "Christal" réalisera un curage hydrodynamique du réseau parking<br/>
+                                <br/><bold>
+                                La pose ou le remplacement des tampons hermétiques n'est pas compris dans le contrat (facturé en Sus)<br/>
+                                En fin de chantier, un rapport écrit vous sera établi relatant les différentes anomalies (canalisations endommagées, fuites, etc...) rencontrées pendant les travaux de curage.<br/>
+                                </bold>
+                                <br/><italic style="font-weight:bold">Garanties</italic><br/>
+                                Ce contrat comporte une garantie d'un an, 7 jours sur 7, 24 heures sur 24, y compris les jours fériés, à l'exclusion des parties privatives (raccordement des appartements au réseau commun) et sera effective, sous réserves de malveillance, de malfaçon, d'utilisation non conforme, de porosité des canalisations, conduites fêlées ou cassées, et présence de racines dans le collecteur, d'absence de bac à graisse et de contrat d'entretien sur ces installations pour les cafés, restaurants et hôtel.<br/>
+                                <br/><italic style="font-weight: bold;">Réserves</italic><br/>
+                                En raison du caractère aléatoire de l'ouverture des tampons et des hermétiques (vétusté, dégradations), ainsi, qu’en cas d’inaccessibilité des tampons et colonnes (coffrage, élément de décantation, etc.), nous déclinons toute responsabilité en cas de fuites, de bris partiel ou d’éventuelles souillures nécessitées par l’intervention.<br/>
+                                Ces prix sont applicables pour tous les travaux dans un délai de 2 mois, travaux réalisés pendant les heures ouvrables (entre 8 h et 17h) du lundi au vendredi.<br/>
+                                Nous vous rappelons que l’accès aux fosses, regards, canalisations et autres installations est sous la responsabilité du client qui devra s’assurer, avant toute intervention, des ouvertures et de prévoir le descellement des plaques.<br/>
+                                Le passage de nos véhicules devra également être assuré, et nous signaler à l’avance les aires de circulation impropre au camion de 20 tonnes.<br/>
+                                Si besoin est, le client devra signaler les anomalies concernant la nature des interventions, du produit, du site ou de son environnement (article R 237-8 du Code du Travail).<br/>
+                                <br/><italic>PRIME</italic><br/>
+                                Le montant de la prime <bold>{! PassageFrequencyName }</bold> et contractuelle sera, pour l'année en cours, de : <bold>{! PassagePrice } Euros</bold> (T.V.A en sus).<br/>
+                                Le nombre <bold>annuel</bold> de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                Date de prise d'effet du contrat :<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2020 }">
+                                <br/><italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le « Client » déclare souscrire auprès de "Christal" un contrat de maintenance de pompe(s) de relevage et de pompage de fosse(s) de relevage dudit immeuble dans les conditions ci-après et au verso fixées moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur). Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <br/><italic style="padding-left:70px;">Article 2</italic><br/>
+                                "Christal" s’engage à effectuer une opération de pompage, assainissement de fosse(s) de relevage.<br/>
+                                "Christal" s’engage à effectuer une opération de maintenance de pompe(s) de relevage : Contrôle de l’appareillage électrique et des connexions, tests et la vérification des régulateurs de niveaux, nettoyage des crépines et armoire de commande, contrôle du réseau d’évacuation (clapet anti-retour/vannes), nettoyage des pompes et puisard, essais de fonctionnement.<br/>
+                                Le vérificateur s'engage en cas d'arrêt des appareils, arrêt qui lui sera signalé, à faire diligence pour assurer le dépannage les jours ouvrables et à envoyer sur place, dans ce but, le personnel compétent sans accepter toutefois aucune responsabilité pour les conséquences que peut entraîner l'arrêt des appareils (dommages intérêts, ni indemnités d'aucune sorte). L'obligation d'intervenir ne signifie pas obligatoirement la remise en service de l'installation en panne. Ces dépannages ne sont pas compris dans ce contrat et feront l'objet d'une facturation supplémentaire.<br/>
+                                Les installations sont supposées être en bon état de fonctionnement et de réglage lors de la prise en charge.<br/>
+                                Dans le cas où une usure ou une détérioration des pièces seraient constatées par le vérificateur, celui-ci informera immédiatement le responsable de l'installation, et établira un devis de remise en état.<br/>
+                                Ces travaux seront exécutés après accord du responsable (par ordre de service ou bon de commande) et seront facturés séparément, hors contrat.<br/>
+                                <br/>L'annexe 1 détermine le nombre de passages.<br/>
+                                <br/><underline style="padding-right:50px">Annexe 1 :</underline>Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <a style="padding-left:103px"></a><bold>Pompe(s) de relevage :</bold> le nombre <bold>annuel</bold> de passages sera de : <bold>{! PassageFrequency }</bold> /Nombre de pompe(s) de relevage : <bold>{! LotsQuantityOrderedByName[1] }</bold><br/>
+                                <a style="padding-left:103px"></a><bold>Fosse(s) de relevage :</bold> le nombre <bold>annuel</bold> de passages sera de : <bold>{! PassageFrequency }</bold> /Fosse(s) de relevage : <bold>{! LotsQuantityOrderedByName[0] } M3</bold><br/>
+                                <a style="padding-left:103px"></a>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2864 }">
+                                <italic>OBJET</italic><br/>
+                                Le Client déclare souscrire auprès de "Christal" un contrat de 3 ans de curage général hydrodynamique des canalisations et du réseau parking, si existant, de l'immeuble. La prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur), le nombre annuel de passages est fixé dans le paragraphe "Prime". Les conditions du contrat sont notifiées ci-après et au verso.<br/>
+                                <italic style="font-weight: bold;">Intervention :</italic><br/>
+                                "Christal" réalisera :<br/>
+                                <bold>Année 1 : un curage hydrodynamique de :</bold><br/>
+                                - la totalité des canalisations verticales, des eaux usées, des eaux vannes, des eaux pluviales horizontales<br/>
+                                - la totalité des canalisations horizontales, des branchements horizontaux, des eaux résiduelles, du collecteur jusqu'à l'égoût.<br/>
+                                - le réseau parking si existant<br/>
+                                <bold>Année 2 :</bold> la totalité des canalisations horizontales, des branchements horizontaux, des eaux résiduelles, du collecteur jusqu'à l'égoût.<br/>
+                                <bold>Année 3 :</bold> la totalité des canalisations horizontales, des branchements horizontaux, des eaux résiduelles, du collecteur jusqu'à l'égoût<br/>
+                                <bold>La pose ou le remplacement des tampons hermétiques n'est pas compris dans le contrat (facturé en Sus)<br/>
+                                    En fin de chantier, un rapport écrit vous sera établi relatant les différentes anomalies (canalisations endommagées, fuites, etc...) rencontrées pendant les travaux de curage.</bold><br/>
+                                <italic style="font-weight: bold;">Garanties</italic><br/>
+                                Ce contrat comporte une garantie d'un an, 7 jours sur 7, 24 heures sur 24, y compris les jours fériés, à l'exclusion des parties privatives (raccordement des appartements au réseau commun) et sera effective, sous réserves de malveillance, de malfaçon, d'utilisation non conforme, de porosité des canalisations, conduites fêlées ou cassées, et présence de racines dans le collecteur, d'absence de bac à graisse et de contrat d'entretien sur ces installations pour les cafés, restaurants et hôtel.<br/>
+                                <italic style="font-weight: bold;">Réserves</italic><br/>
+                                En raison du caractère aléatoire de l'ouverture des tampons et des hermétiques (vétusté, dégradations), ainsi, qu’en cas d’inaccessibilité des tampons et colonnes (coffrage, élément de décantation, etc.), nous déclinons toute responsabilité en cas de fuites, de bris partiel ou d’éventuelles souillures nécessitées par l’intervention.
+                                Ces prix sont applicables pour tous les travaux dans un délai de 2 mois, travaux réalisés pendant les heures ouvrables (entre 8 h et 17h) du lundi au vendredi.
+                                Nous vous rappelons que l’accès aux fosses, regards, canalisations et autres installations est sous la responsabilité du client qui devra s’assurer, avant toute intervention, des ouvertures et de prévoir le descellement des plaques.
+                                Le passage de nos véhicules devra également être assuré, et nous signaler à l’avance les aires de circulation impropre au camion de 20 tonnes.
+                                Si besoin est, le client devra signaler les anomalies concernant la nature des interventions, du produit, du site ou de son environnement (article R 237-8 du Code du Travail).<br/>
+                                <br/><italic>PRIME</italic><br/>
+                                Le montant de la prime <bold>{! PassageFrequencyName }</bold> et contractuelle sera, pour l'année en cours, de : <bold>{! PassagePrice } Euros</bold> (T.V.A en sus).<br/>
+                                Le nombre <bold>annuel</bold> de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                Date de prise d'effet du contrat :<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2863 }">
+                                <italic>OBJET</italic><br/>
+                                Le Client déclare souscrire auprès de "Christal" un contrat de curage général hydrodynamique des canalisations et du réseau parking (si existant) de l'immeuble. La prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur), le nombre annuel de passages est fixé dans le paragraphe "Prime".<br/>
+                                Les conditions du contrat sont notifiées ci-après et au verso.<br/>
+                                <br/><italic style="font-weight:bold">Intervention : </italic><br/>
+                                "Christal" réalisera un curage hydrodynamique de :<br/>
+                                - la totalité des canalisations verticales, des eaux usées, des eaux vannes, des eaux pluviales horizontales<br/>
+                                - la totalité des canalisations horizontales, des branchements horizontaux, des eaux résiduelles, du collecteur jusqu'à l'égoût.<br/>
+                                - le réseau parking si existant<br/>
+                                <bold>
+                                    La pose ou le remplacement des tampons hermétiques n'est pas compris dans le contrat (facturé en Sus)<br/>
+                                    En fin de chantier, un rapport écrit vous sera établi relatant les différentes anomalies (canalisations endommagées, fuites, etc...) rencontrées pendant les travaux de curage.<br/>
+                                </bold>
+                                <br/><italic style="font-weight:bold">Garanties</italic><br/>
+                                Ce contrat comporte une garantie d'un an, 7 jours sur 7, 24 heures sur 24, y compris les jours fériés, à l'exclusion des parties privatives (raccordement des appartements au réseau commun) et sera effective, sous réserves de malveillance, de malfaçon, d'utilisation non conforme, de porosité des canalisations, conduites fêlées ou cassées, et présence de racines dans le collecteur, d'absence de bac à graisse et de contrat d'entretien sur ces installations pour les cafés, restaurants et hôtel.<br/>
+                                <italic style="font-weight: bold;">Réserves</italic><br/>
+                                En raison du caractère aléatoire de l'ouverture des tampons et des hermétiques (vétusté, dégradations), ainsi, qu’en cas d’inaccessibilité des tampons et colonnes (coffrage, élément de décantation, etc.), nous déclinons toute responsabilité en cas de fuites, de bris partiel ou d’éventuelles souillures nécessitées par l’intervention.
+                                Ces prix sont applicables pour tous les travaux dans un délai de 2 mois, travaux réalisés pendant les heures ouvrables (entre 8 h et 17h) du lundi au vendredi.
+                                Nous vous rappelons que l’accès aux fosses, regards, canalisations et autres installations est sous la responsabilité du client qui devra s’assurer, avant toute intervention, des ouvertures et de prévoir le descellement des plaques.
+                                Le passage de nos véhicules devra également être assuré, et nous signaler à l’avance les aires de circulation impropre au camion de 20 tonnes.
+                                Si besoin est, le client devra signaler les anomalies concernant la nature des interventions, du produit, du site ou de son environnement (article R 237-8 du Code du Travail).<br/>
+                                <br/><italic>PRIME</italic><br/>
+                                Le montant de la prime <bold>{! PassageFrequencyName }</bold> et contractuelle sera, pour l'année en cours, de : <bold>{! PassagePrice } Euros</bold> (T.V.A en sus).<br/>
+                                Le nombre <bold>annuel</bold> de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                Date de prise d'effet du contrat :<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2802 }">
+                                <italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le "Client" déclare souscrire auprès de "Christal" un contrat de traitement biologique des canalisations d’eaux usées dudit immeuble, dans les conditions ci-après et au verso fixées, moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur).<br/>
+                                Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <italic style="padding-left:70px;">Exclusion</italic><br/>
+                                Le présent contrat ne prévoit pas :<br/>
+                                - Les interventions au-delà du passage contractuel,<br/>
+                                - Les dégorgements,<br/>
+                                - L'accès aux conduits, regards et canalisations est sous la responsabilité du client, qui devra s'assurer des ouvertures et prévoir le descellement des plaques. En cas d'inaccessibilité, les travaux nécessaires de création de trappes d'accès ou tampons feront l’objet d’une facturation séparée.<br/>
+                                <br/><italic style="padding-left:70px">Article 2</italic><br/>
+                                "Christal" s'engage à effectuer le traitement des canalisations d’eaux usées en parties privatives. Ce traitement annuel est réalisé en deux étapes. :<br/>
+                                1ère étape : Application d’un activateur nécessaire à l’ensemencement bactérien ; il active et améliore le démarrage des processus biologiques, favorise l’implantation des bactéries et rééquilibre le milieu (nutriment, Ph, etc...).<br/>
+                                2ème étape : Ensemencement de composés biologiques (bactéries).<br/>
+                                L’intervention s’effectue tous les deux niveaux, du haut vers le bas, dans toutes les pièces d’eau (salle de bains, toilettes, cuisine, ...) ; les occupants en seront prévenus par des avis affichés dans les halls, 15 jours au préalable.<br/>
+                                "Christal" ne sera pas responsable des dégâts occasionnés par le mauvais état des canalisations et décline toute responsabilité en cas de fuite ou de dégradations diverses.<br/>
+                                L'annexe 1 détermine le nombre annuel de passages ainsi que les lieux traités.<br/>
+                                <br/><underline style="padding-right: 69px">Annexe 1 :</underline> Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <padding125/>Le nombre annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <padding125/>Lieux traités : <bold>{! LotsDetailPCPP }</bold><br/>
+                                <padding125/>(A=Appartement - C=Chambre - L=Loge - LC=Local Commercial)<br/>
+                                <padding125/>Nombre de cage(s) : <bold>{! CageQuantity }</bold><br/>
+                                <padding125/>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2805 }">
+                                <italic style="padding-left:70px;">Article 1</italic><br/>
+                                Le "Client" déclare souscrire auprès de "Christal" un contrat de traitement biologique des canalisations d’eaux usées dudit immeuble, dans les conditions ci-après et au verso fixées, moyennant une prime périodique et forfaitaire hors taxes (plus TVA au taux en vigueur).<br/>
+                                Le montant de cette prime et sa périodicité sont fixés en annexe 1.<br/>
+                                <italic style="padding-left:70px;">Exclusion</italic><br/>
+                                Le présent contrat ne prévoit pas :<br/>
+                                - Les interventions au-delà du passage contractuel,<br/>
+                                - Les dégorgements,<br/>
+                                - L'accès aux conduits, regards et canalisations est sous la responsabilité du client, qui devra s'assurer des ouvertures et prévoir le descellement des plaques. En cas d'inaccessibilité, les travaux nécessaires de création de trappes d'accès ou tampons feront l’objet d’une facturation séparée.<br/>
+                                <br/><italic style="padding-left:70px">Article 2</italic><br/>
+                                "Christal" s'engage à effectuer le traitement des canalisations d’eaux usées en parties privatives. Ce traitement annuel comporte :<br/>
+                                - un traitement bactériologique de la totalité des canalisations verticales eaux usées, eaux vannes,<br/>
+                                - un curage de la totalité des branchements horizontaux et collecteurs jusqu'à l'égout.<br/>
+                                L’intervention biologique s’effectue tous les deux niveaux, du haut vers le bas, dans toutes les pièces d’eau (salle de bains, toilettes, cuisine, ...) ; les occupants en seront prévenus par des avis affichés dans les halls, 15 jours au préalable.<br/>
+                                "Christal" ne sera pas responsable des dégâts occasionnés par le mauvais état des canalisations et décline toute responsabilité en cas de fuite ou de dégradations diverses.<br/>
+                                L'annexe 1 détermine le nombre annuel de passages ainsi que les lieux traités.<br/>
+                                <br/><underline style="padding-right: 69px">Annexe 1 :</underline> Le montant de la prime <bold>{! PassageFrequencyName }</bold> sera de : <bold>{! PassagePrice } Euros</bold> hors taxes.<br/>
+                                <padding125/>Le nombre annuel de passages sera de : <bold>{! PassageFrequency }</bold><br/>
+                                <padding125/>Lieux traités : <bold>{! LotsDetailPCPP }</bold><br/>
+                                <padding125/>(A=Appartement - C=Chambre - L=Loge - LC=Local Commercial)<br/>
+                                <padding125/>Nombre de cage(s) : <bold>{! CageQuantity }</bold><br/>
+                                <padding125/>Prise d'effet :<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==2150 || CodePresta==2151}">
+                                <bold>Article 1</bold><br/>
+                                Le Client déclare souscrire auprès de "Christal" un contrat prévention Rongeurs (mulots, surmulots, rats et souris) dans les parties communes basses ouvertes et accessibles (sous-sols, parking et RDC) dudit immeuble.<br/>
+                                "Christal" s’engage à effectuer un suivi régulier dans le respect des règles de l’art afin de préserver de la prolifération des rongeurs.<br/>
+                                Le présent contrat couvre :<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Audit de mise en place par un technicien certifié biocide,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Rapport de l’audit avec préconisations,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Mise en place de postes d’appâtage,<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Visites régulières de suivi de non-prolifération (surveillance standard 2 visites annuelles à adapter en fonction du niveau de risque),<br/>
+                                <a style="padding-left:25px;padding-right:25px">-</a>Traitements des infestations et rapport de fin d’infestation.<br/>
+                                <br/><bold>Article 2</bold><br/>
+                                Le présent contrat ne couvrant pas les travaux ou réparations propres à empêcher la pénétration des rongeurs, ni le nettoyage et le débarras des locaux, le Client accepte de donner quitus au Prestataire pour réaliser les travaux liés à l’herméticité à hauteur de 350€ HT par an (la facture sera accompagnée d’un rapport), au-delà de ce montant, le Prestataire devra établir un devis<a style="padding-left:70px"></a><input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-right:10px"></a>Oui<a style="padding-left:20px"></a><input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-right:10px"></a>Non<br/>
+                                <br/><bold>Article 3</bold><br/>
+                                <table cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="padding-left:40px">Prime annuelle (facturation à la première intervention de la période)</td>
+                                        <td style="padding-left:60px"><bold>{! TotalPrice } Euros</bold> hors taxes.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px">Frais de traitement des déchets : 5,90 €</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px">
+                                            <input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-left:15px;"></a>Remise liée à la facturation en totalité au 1e janvier
+                                        </td>
+                                        <td style="padding-left:60px">- 5%</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px">Accès à MyBatisanté</td>
+                                        <td style="padding-left:60px">Offert</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px">Intervention sans RDV dans le cadre de nos tournées</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px">
+                                            <input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-left:15px;"></a>Option visite sur RDV matin/ après-midi
+                                        </td>
+                                        <td style="padding-left:60px">30€</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px">
+                                            <input type="checkbox" style="border: solid 1.5px black;width: 7px;height:8px;"/><a style="padding-left:15px;"></a>Option clef syndic
+                                        </td>
+                                        <td style="padding-left:60px">20€</td>
+                                    </tr>
+                                </table>
+                                <br/><bold>Article 4</bold><br/>
+                                Le contrat ne couvre pas les box ni les caves privatives ni les abords extérieurs de l’immeuble.<br/>
+                                Le Client s’interdit de souscrire auprès d'autres entreprises, durant toute la durée du contrat, des prestations de nature équivalente ou de même destination que celles faisant l’objet du contrat. Toute infraction exonérera le prestataire de sa garantie de moyen.<br/>
+                                <br/><bold>Article 5</bold><br/>
+                                Tous les lots dudit immeuble bénéficient d’une remise de 25% sur les tarifs des prestations Lutte Rongeurs en parties privatives.<br/><br/>
+                                <bold>Article 6</bold><br/>Le Client ou son représentant légal, le cas échéant, doit s’assurer que le Prestataire aura un accès aux locaux afin de pouvoir assurer sa prestation et autorise expressément le Prestataire à utiliser tout passe universel lui permettant d’accéder au(x) lieu(x) visé(s) par la prestation.<br/><br/>
+                                <bold>LE CLIENT RECONNAIT AVOIR PRIS CONNAISSANCE DES RÈGLES DE PRÉCONISATIONS ET DE SÉCURITÉ</bold> AINSI QUE DES CGV DU PRESTATAIRE. Le Client s’engage à respecter l’ensemble des obligations mises à sa charge dans le cadre du contrat ci-dessus et, notamment, celles décrites dans les règles de préconisations et de sécurité et les CGV.<br/>
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                </table>
+                <table width="100%">
+                    <tr>
+                        <td style="{!PoliceSize}">
+                            <span  rendered="{! CodePresta!=2105 || CodePresta!=2151}">
+                            Le Client ou son représentant légal, le cas échéant, doit s’assurer que le Prestataire aura un accès aux locaux afin de pouvoir assurer sa prestation et autorise expressément le Prestataire à utiliser tout passe universel lui permettant d’accéder au(x) lieu(x) visé(s).<br/><br/>
+                            </span>
+                                <table>
+                                <tr>
+                                    <td  height="5" width="7" style="border: solid 2px black;"></td>
+                                    <td style="line-height: 0.9; padding-left:5px;">
+                                        * Je renonce expressément à l’exercice du droit de rétraction dont je bénéficie en vertu de l’article L 121-21 du Code de la Consommation.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="line-height: 0.9;padding-left:20px ">* merci de cocher cette case, à défaut nous respecterons un délai minimum de 14 jours pour exécuter votre commande</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <table style="width:100%;{!PoliceSize}">
+                    <tr>
+                        <td valign="top" style="width:40%">
+                            Le représentant du "Client",<br/>
+                            Accepté le :<br/>
+                            Date de prise d'effet :<br/>
+                            Cachet et nom du signataire :<br/>
+                            Lu et approuvé aux conditions générales précisées au verso.
+                        </td>
+                        <td valign="top" style="width:15%;">
+                            La société "Christal",<br/>
+                            <div style="padding-left:45px"></div>Proposition du : <b>{! DAY(TODAY()) }/{! MONTH(TODAY()) }/{! YEAR(TODAY()) }</b><br/>
+                            <div style="padding-left:45px"></div>Cachet et nom du signataire :
+                        </td>
+                        <td valign="bottom" style="width:15%;">
+                            <apex:image style="width:85%" id="tamponImage" url="{!$Label.Tampon_URL}" alt="Tampon Signé" />
+                        </td>
+                    </tr>
+                </table>
+                <table width="100%" class="bottom-center-div">
+                    <tr>
+                        <td align="center">
+                            <apex:image id="footerImage" height="60" url="{!$Label.Footer_URL}" alt="Pôle Logo" />
+                        </td>
+                    </tr>
+                </table>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{! Pole=='Sécurité incendie' }">
+                	<table width="100%">
+                    	<tr>
+                            
+                            <td align="left">
+       
+                                  <apex:image id="BouvierImage" height="80" url="{! IF(CodePresta==29366 || CodePresta==29552 || CodePresta==29130 || CodePresta==29453 || CodePresta==29052|| CodePresta==29068 || CodePresta==29110|| CodePresta==29154||CodePresta==29206||CodePresta==29254|| CodePresta==29253,$Label.Bouvier_Header_Url,$Label.Extincteurs_Header_URL)}" alt="Pôle Logo" />
+                            	 
+                               
+                                
+                            	
+                        	</td>
+                            <td align="right">
+                            	<apex:outputPanel rendered="{! CodePresta==750 || CodePresta==850 || CodePresta==950 || CodePresta==1120 || CodePresta==1122 || CodePresta==1130 || CodePresta==1150 || CodePresta==1280 || CodePresta==1360 || CodePresta==1450 || CodePresta==1933}">
+                            		<apex:image id="sagexImage" height="80" url="{!$Label.Sagex_Header_URL}" alt="Pôle Logo" />
+                            	</apex:outputPanel>
+                                
+                            </td>
+                    	</tr>
+                	</table>
+                
+                <table style="width:100%">
+                    <tr>
+                        <td style="font-weight: bold;font-size:11px;text-align:right">
+                        	<apex:outputPanel rendered="{! Canceled }">
+                            	(Annule et remplace le précédent contrat)
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td style="font-weight: bold;font-size:16px;text-align:center;padding-top:15px">
+                            <apex:outputText escape="false" value="{! IF(CodePresta==29366 || CodePresta==29552 || CodePresta==29130 || CodePresta==29453|| CodePresta==29052|| CodePresta==29068 || CodePresta==29110|| CodePresta==29154||CodePresta==29206||CodePresta==29254|| CodePresta==29253 ,title, 'Contrat de '+CompletePrestaName) }"></apex:outputText>
+   
+                            
+                            
+                        </td>
+                    </tr>
+                    <apex:outputPanel rendered="{! CodePresta==29253}">
+                    <tr>
+                 <td style="{!PoliceSize}">
+                     <br/>Concernant l'immeuble :  <br/> 
+
+                     Nombre de blocs autonomes estimé: <bold>{! LotsQuantity }</bold> <br/>
+                   
+<br/>
+En cas de méconnaissance du parc à vérifier, le relevé sera établi par le prestataire lors de la première visite de notre technicien.
+<br/><br/>Par ailleurs, tout équipement manquant au regard de la réglementation en vigueur, dont le devis et la pose ont été acceptés par le client, et ceux présents mais non répertoriés lors de la 1ère visite, seront automatiquement intégrés à la prime contractuelle sans avenant complémentaire. Ces équipements seront facturés à partir de l'année suivante. En fonction du nombre d'équipements ajoutés au contrat, la cotisation sera susceptible d'évoluer. 
+
+                        </td>
+                    </tr>
+                    </apex:outputPanel>
+                    
+                    <tr>
+                        <td style="{!PoliceSize}">
+                            <br/>Entre les soussignés : <bold style="padding-left:20px;"><apex:outputText value="{!DevisInfos[1]}" escape="false" /></bold><br/> 
+                            N/Réf : {! PrestaProposition } / N° <bold> {! CodePresta }</bold><apex:outputLabel value="{!IF(devisInfos.size>4,' / ' + DevisInfos[4],'')}" /> - Ref Client : {! DevisInfos[0] }<br/>
+                            représenté par : <bold style="padding-left:100px;">{! DevisInfos[2] }</bold><br/>
+                            désigné ci-après et au verso, par le "CLIENT" d'une part, agissant en tant que représentant dûment accrédité de l'immeuble ci-dessus,<br/>
+                             <apex:outputPanel rendered="{! CodePresta!=29366 && CodePresta!=29552 && CodePresta!=29130 && CodePresta!=29453 && CodePresta!=29253 && CodePresta!=29052 && CodePresta!=29068 && CodePresta!=29110 && CodePresta!=29154 && CodePresta!=29206 && CodePresta!=29254}" >
+                            <apex:outputText value="et la société SAGEX ci-dessous référencée, représentée par son dirigeant, désignée, ci-après et au verso : ''SAGEX'' d'autre part." style="white-space:pre;" escape="false"/>
+                           </apex:outputPanel>
+                            
+                             <apex:outputPanel rendered="{! CodePresta==29253 || CodePresta==29052|| CodePresta==29068 || CodePresta==29110|| CodePresta==29154||CodePresta==29206||CodePresta==29254}" >
+                               <apex:outputText value="et la société BOUVIER ci-dessous référencée, représentée par son dirigeant, désignée, ci-après et au verso : ''BOUVIER'' d'autre part." style="white-space:pre;" escape="false"/>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel rendered="{!CodePresta==29366 || CodePresta==29552 || CodePresta==29130 || CodePresta==29453}" >
+                               <apex:outputText value="ci-dessus référencée, représentée par son dirigeant, désignée, ci-dessous et au verso, par prestataire d'autre part," style="white-space:pre;" escape="false"/>
+                            </apex:outputPanel>
+                           
+                                 <br/>Il est convenu ce qui suit :<br/>
+                        </td>
+                    </tr>
+                </table>
+                <table width="100%">
+                    <tr>
+                        <td style="{!PoliceSize}" width="100%">
+                            <apex:outputPanel rendered="{! CodePresta==29366 || CodePresta==29552 || CodePresta==29130 || CodePresta==29453 || CodePresta==29253 || CodePresta==29052|| CodePresta==29068 || CodePresta==29110|| CodePresta==29154||CodePresta==29206||CodePresta==29254}" >
+                                <apex:outputText value="{! DescriptifPrestation }" escape="false"></apex:outputText>
+                                
+                       
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!  CodePresta==29366 || CodePresta==29552 || CodePresta==29130 || CodePresta==29453 || CodePresta==29052|| CodePresta==29068 || CodePresta==29110|| CodePresta==29154||CodePresta==29206||CodePresta==29254}" >
+                             <apex:outputText value="{!LotsAsString}" escape="false"/>
+                                <apex:outputText value="{! DescriptifPrestationText }" escape="false"></apex:outputText>
+                                
+                       
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==750 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat annuel de vérification et de maintenance préventive des poteaux incendie dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement la vérification préventive et la mise en eau des équipements de sécurité incendie ci-dessous désignés (voir article 4) et à intervenir ponctuellement sur site dans les 72 heures ouvrées pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installation (voir article 5).<br/><br/>
+                                <bold>ARTICLE 2 : TYPE DE CONTRAT : FNC (FOURNITURES NON COMPRISES)</bold><br/>
+                                Le contrat FNC, fournitures non comprises, prévoit le maintien en état de fonctionnement des installations, tout remplacement de pièce ou réparation étant aux frais du CLIENT.<br/><br/>
+                                <bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                Seront à la charge du CLIENT : toutes les pièces détachées nécessaires à la remise en état des matériels détériorés par suite de chocs, sinistres, malveillance, vols, vétusté, etc... type : pièces mécaniques telles que bouchons, vannes, carrés de manoeuvre, clapet de fermeture, joints d'étanchéité des prises, signalisation, etc...<br/>
+                                SAGEX, ne sera pas responsable des dégâts provoqués par fuite d'eau, rupture de pièces et accessoires, infiltrations d'eau et d'une manière générale, tous dégâts corporels ou matériels occasionnés par la réalisation du ou des essais.<br/>
+                                Le présent contrat exclut toute réparation éventuelle sur le corps des poteaux incendie, et les contraintes réglementaires à venir.<br/><br/>
+                                <bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre de poteaux incendie : <bold>{! LotsQuantity }</bold><br/><br/>
+                                <bold>ARTICLE 5 : DESCRIPTIF PRESTATIONS - GARANTIE</bold><br/>
+                                Le présent contrat se limite strictement à l'exécution des opérations suivantes sur les équipements émunéréss (voir article 4) :<br/>
+                                Vérification du libre accès aux raccords d'alimentation et aux prises d'incendie,<br/>
+                                Vérification du bon état général de l'installation et du bon fonctionnement de la robinetterie,<br/>
+                                Vérification de la présence de la signalisation,<br/>
+                                Vérification de l'ensemble régulateur (plateau, joint, etc),<br/>
+                                Graissage des parties mécaniques et de la boulonnerie,<br/>
+                                Essai hydrostatique pour vérification de l'étanchéité des joints et mesure du débit.<br/>
+                                Vidange de l'installation.<br/><br/>
+                                PERIODICITE D'EXECUTION :<br/>
+                                - SAGEX effectuera une visite préventive annuelle systématique ;<br/>
+                                - des dépannages correctifs (hors travaux de remise en état) quel qu'en soit le nomre sur demande ponctuelle donneront lieu à une facturation particulière complémentaire.<br/><br/>
+                                <bold>ARTICLE 6 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé est, pour l'année en cours, de :<br/>
+                                <bold>Euros H.T. {! TotalPrice }</bold> (T.V.A. en sus)<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==850 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire aurpès de SAGEX un contrat annuel de vérification et de maintenance préventive des bouches incendie dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement la vérification préventive et la mise en eau des équipements de sécurité incendie ci-dessous désignés (voir article 4) et à intervenir ponctuellement sur site dans les 72 heures ouvrées pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installation (voir article 5).<br/>
+                                <bold>ARTICLE 2 : TYPE DE CONTRAT : FNC (FOURNITURES NON COMPRISES)</bold><br/>
+                                Le contrat FNC, fournitures non comprises, prévoit le maintien en état de fonctionnement des installations, tout remplacement de pièce ou réparation étant aux frais du CLIENT.<br/>
+                                <bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                Seront à la charge du CLIENT : toutes les pièces détachées nécessaires à la remise en état des matériels détériorés par suite de chocs, sinistres, malveillance, vols, vétusté, etc... type : pièces mécaniques telles qur bouchons, vannes, carrés de manoeuvre, clapet de fermeture, joints d'étanchéité des prises, signalisation, etc...<br/>
+                                SAGEX, ne sera pas responsable des dégâts provoqués par fuite d'eau, rupture de pièces et accessoires, infiltrations d'eau et d'une manière générale, tous dégâts corporels ou matériels occasionnés par la réalisation du ou des essais.<br/>
+                                Le présent contrat exclut toute réparation éventuelle sur le coprs des bouches incendie, et les contraintes réglementaires à venir.<br/>
+                                <bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre de bouches incendie : <bold>{! LotsQuantity }</bold><br/>
+                                <bold>ARTICLE 5 : DESCRIPTIF PRESTATIONS - GARANTIE</bold><br/>
+                                Le présent contrat se limite strictement à l'exécution des opérations suivantes sur les équipements énumétés (voir article 4) :<br/>
+                                Vérification du lire accès aux raccords d'alimentation et aux prises d'incendie,<br/>
+                                Verification du bon état général de l'installation et du bon fonctionnement de la robinetterie,<br/>
+                                Vérification de la présence de la signalisation,<br/>
+                                Vérification de l'ensemble régulateur (plateau, joint, etc.),<br/>
+                                Graissage des parties mécaniques et de la boulonnerie,<br/>
+                                Essai hydrostatique pour vérification de l'étanchéité des joints et mesure du débit.<br/>
+                                Vidange de l'installation.<br/>
+                                PERIODICITE D'EXECUTION :<br/>
+                                - SAGEX effectuera une viste préventive annuelle systématique ;<br/>
+                                - des dépannages correctifs (hors travaux de remise en état) quel qu'en soit le nombre sur demande ponctuelle donneront lieu à une facturation particulière complémentaire.<br/>
+                                <bold>ARTICLE 6 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé est, pour l'année en cours, de :<br/>
+                                <bold>Euros H.T. {! TotalPrice }</bold> (T.V.A. en sus)<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==950 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat annuel de vérification et de maintenance préventive des robinets d'incendie armés dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement la vérification préventive et la mise en eau des équipements de sécurité incendie ci-dessous désignées (voir article 4) et à intervenir
+                                <bold> ARTICLE 2 : TYPR DE CONTRAT : FNC (FOURNITURES NON COMPRISES)</bold><br/>
+                                Le contrat FNC, fournitures non comprises, prévoit le maintien en état de fonctionnement des installations, tout remplacement de pièce ou réparation étant aux frais du CLIENT.<br/>
+                                <bold>ARTICLE 3 : CLAUSES RESTRICIVES (liste exhaustive)</bold><br/>
+                                Seront à la charge du CLIENT : toutes les pièces détachées nécessaires à la remise en état des matériels détériorés par suite de chocs, sinistres, malveillance, vols, vétusté, etc... type : pièces mécaniques telles que tuyau, robinet de lance, raccord, vannes d'alimentation, robinets de purge, joints d'étanchéité, signalisation, etc...<br/>
+                                SAGEX, ne sera pas responsable des dégâts provoqués par fuite d'eau, rupture de pièces et acessoires, infiltrations d'eau et d'une manière générale, tous dégâts corporels ou matériels occasionnés par la réalisation du ou des essais.<br/>
+                                Le présent contrat exclut toute réparation éventuelle sur le coprs des robinets d'incendie armés, et les contraintes réglementaires à venir.<br/>
+                                <bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre de robinets d'incendie armés : <bold>{! LotsQuantity }</bold><br/>
+                                <bold>ARTICLE 5 : DESCRIPTIF PRESATIONS - GARANTIE</bold><br/>
+                                Le présent contrat se limite strictement à l'exécution des opérations suivantes sur les équipements énumérés (voir article 4) :<br/>
+                                Vérification du libre accès aux raccords d'alimentation et aux prises d'incendie,<br/>
+                                Vérification du bon état général de l'installation et du bon fonctionnement de la robinetterie,<br/>
+                                Vérification de la présence de la signaisation, des vannes d'alimentation, des joints ainsi que de leur état,<br/>
+                                Essai dynamique et statique pour vérification de l'étanchéité des robinets d'incendie armés.<br/>
+                                Vidange de l'installation.<br/>
+                                PERIODICITE D'EXECUTION :<br/>
+                                - SAGEX effectuera une viste préventive annuelle systématique ;<br/>
+                                - des dépannages correctifs (hors travaux de remise en état) quel qu'en soit le nombre sur demande ponctuelle donneront lieu à une facturation particulière complémentaire.<br/>
+                                <bold>ARTICLE 6 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé est, pour l'année en cours, de :<br/>
+                                <bold>Euros H.T. {! TotalPrice }</bold> (T.V.A. en sus)<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1122 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat triennal de maintenance préventive et corrective dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement les travaux de maintenance des équipements de sécurité incendie ci-dessous désignés (voir article 4) et à intervenir ponctuellement sur site dans les 48 heures ouvrées pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installation.<br/><br/>
+                                <bold>ARTICLE 2 : TYPE DE CONTRAT : GARANTIE TOTALE DES TR2S (A L'EXCLUSION DU VOL)</bold><br/>
+                                Le contrat TR2, tout risque, tout remplacement, prévoit le maintien en état de fonctionnement des appareils lors de la miantenance annuelle ou sur demande pontuelle du CLIENT.<br/>
+                                A la charge de SAGEX :<br/>
+                                Toute recharge ou remise en état d'origine technique suite utilisation ou vandalisme.<br/>
+                                Toute recharge ou remise en état due à la dégradation des agents extincteurs.<br/>
+                                Tout remplacement suite à une réforme légale (par des appareils révisés).<br/>
+                                Tout remplacement des appareils hors d'âge.<br/>
+                                Toute épreuve des mines sur le corps d'appareil extincteur.<br/>
+                                Toutes pièces détachées, joints, flexibles, sparklet, etc...<br/><br/>
+                                <bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                A la charge du CLIENT : tout déplacement ou prestation au-delà d'une par bimestre ainsi que la facturation au tarif en vigeur des extincteurs ayant servi à maîtriser un incendie donnant lieu à une déclaration de sinistre auprès des assurances mettant en cause minimum 5 appareils.<br/>
+                                De même, la fourniture d'appareils neufs ainsi que les déplacements suite à vol seront facturés au CLIENT.<br/><br/>
+                                <bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre d'appareils extincteurs : <bold>{! LotsQuantity }</bold><br/><br/>
+                                <bold>ARTICLE 5 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé (facturée après l'intervention) est, pour l'année en cours, de :<br/>
+                                <bold>Euros H.T. {!LotsPrice} + {!DeplacementPrice} déplacement forfaitaire</bold> (T.V.A en sus)<br/>
+                                <bold>Frais de traitement des déchets : 5,90 €</bold>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1130 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat annuel de maintenance préventive et corrective dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement les travaux de maintenance des équipements de sécurité incendie ci-dessous désignés (voir article 4) et à intervenir ponctuellement sur site dans les 48 heures ouvrées pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installation.<br/>
+                                Ce présent document répond aux exigences de la Norme NF S61-922 et les vérifications seront effectuées conformément aux exigences de la Norme NF S61-919.<br/><br/>
+                                <bold>ARTICLE 2 : TYPE DE CONTRAT : TRM (TOUT RISQUE MAINTENANCE)</bold><br/>
+                                Le contrat TRM, tout risque maintenance, prévoit le maintien en état de fonctionnement des appareils lors de la vérification annuelle réglementaire.<br/>
+                                A la charge de SAGEX :<br/>
+                                Toute remise en état d'origine technique.<br/>
+                                Toute recharge suite utilisation ou vandalisme.<br/>
+                                Toute charge suite à la dégradation de l'argent extincteur.<br/>
+                                Toutes pièces détachées, joints, flexibles, sparklets, etc...<br/><br/>
+                                <bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                A la charge du CLIENT : tout remplacement d'extincteur (réforme hors d'âge ou réforme légale, vol...) ainsi que les fournitures et prestations supplémentaires réalisées en cours d'année suite à une demande d'intervention corrective ponctuelle.<br/>
+                                Les points ci-dessus mentionnés feront l'objet d'une facturation séparée.<br/><br/>
+                                <bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre d'appareils extincteurs : <bold>{! LotsQuantity }</bold><br/><br/>
+                                <bold>ARTICLE 5 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé (facturée en début de période) est, pour l'année en cours, de :<br/>
+                                <bold>Euros H.T. {!LotsPrice} + {!DeplacementPrice} déplacement forfaitaire</bold> (T.V.A en sus)<br/>
+                                <bold>Frais de traitement des déchets : 5,90 €</bold><br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1150 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire aurpès de SAGEX un contrat annuel de vérification et de maintenance préventive des extincteurs dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement les travaux de maintenance des équipements de sécurité incendie ci-dessous désignés (voir article 4) et à intervenir ponctuellement sur site dans les 48 heures ouvrées pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installation.<br/><br/>
+                                <br/><bold>ARTICLE 2 : TYPE DE CONTRAT : FNC (FOURNITURES NON COMPRISES)</bold><br/>
+                                Le contrat FNC, fournitures non comprises, prévoit le maintien en état du fonctionnement des appareils, tout remplacement de charge ou de pièce étant aux frais du CLIENT.<br/><br/>
+                                <br/><bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                A la charge du CLIENT : toutes les pièces détachées nécessaires à la remise en état des appareils détériorés par suite de chocs, sinistres, malveillance, vols, vétusté, etc...<br/>
+                                Egalement les contraintes réglementaires existantes ou à venir telles que : réépreuves, réformes, etc...<br/><br/>
+                                <br/><bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre d'appareils extincteurs : <bold>{! LotsQuantity }</bold><br/><br/>
+                                <br/><bold>ARTICLE 5 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé (facturée après l'intervention) est, pour l'année en cours, de :<br/>
+                                <bold>Euros H.T. {!LotsPrice} + {!DeplacementPrice} déplacement forfaitaire</bold> (T.V.A en sus)<br/>
+                                <bold>Frais de traitement des déchets : 5,90 €</bold><br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1200 }">
+                                <bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat triennal de vérification et de maintenance préventive et corrective de l'éclairage de sécurité par blocs autonomes dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement la vérfication préventive et corrective et à intervenir ponctuellement sur site dans les 48 heures ouvrées pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installation (voir article 5).<br/>
+                                <br/><bold>ARTICLE 2 : TYPE DE CONTRAT : GARANTIE TOTALE TR2N</bold><br/>
+                                Le contrat TR2, tout risque, tout remplacement, prévoit le maintien en état de fonctionnement des blocs autonomes, tout remplacement de pièce ou réparation étant à la charge de SAGEX.<br/>
+                                <br/><bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                A la charge du CLIENT : tout déplacement ou prestation au-delà d'une par bimestre ainsi que la facturation au tarif en vigeur de remplacement de blocs autonomes détériorés suite à un sinistre donnant lieu à une déclaration auprès des assurances (incendie, explosion ...) ou dus à la foudre.<br/>
+                                Le présent cotrat exclut toute réparation éventuelle du réseau électrique de raccordement ainsi que du tableau électrique.<br/>
+                                <br/><bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre de blocs autonomes : <bold>{! LotsQuantity }</bold><br/>
+                                <br/><bold>ARTICLE 5 : DESCRIPTIF PRESTATIONS - GARANTIE</bold><br/>
+                                Le présent contrat se limite strictement à l'exécution des opérations suivantes sur les équipements énumérés (voir article 4) : mise en fonctionnement de l'installation pour vérification des batteries, vérification et remplacement éventuel des ampoules et fusibles, vérification de la mise au repos par télécommande lorsqu'elle existe, nettoyage, remplacement de toutes les pièces détachées nécessaires à la remise en état des blocs détériorés par suite de chocs, vétusté, remplacement des blocs autonomes hors normes, hors service, volés ou vandalisés, fourniture de la signalisation et des grilles des protection en parties basses de parking.<br/>
+                                Tout défaut de fonctionnement relevant de l'entretien ainsi que le remplacement des pièces sont garantis tout au long de la période contractuelle sans frais supplémentaires.<br/>
+                                SAGEX n'assure son intervention et n'engage sa responsabilité que sur les prestations de maintenance décrites ci-dessus.<br/>
+                                PERIODICITE D'EXECUTION :<br/>
+                                - SAGEX effectuera une visite préventive annuelle systématique (1 visite vérification/essai)<br/>
+                                - des dépannages correctifs quel qu'en soit le nombre sur demande ponctuelle dans la limite fixée ci-dessus (voir article 3).<br/>
+                                <br/><bold>ARTICLE 6 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé (facturée en début de période) est, pour l'année en cours, de :<br/>
+                                <bold>Euros H.T. {! TotalPrice }</bold> (T.V.A. en sus)<br/>
+                                <bold>Frais de traitement des déchets : 5,90€</bold><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1280 }">
+                                <bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat annuel de vérification et de maintenance préventive de l'éclairage de sécurité par blocs autonomes dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement la vérfication préventive et à intervenir ponctuellement sur site dans les 48 heures ouvrées pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installation (voir article 5).<br/>
+                                <br/><bold>ARTICLE 2 : TYPE DE CONTRAT : GARANTIE TOTALE FNCP (FOURNITURES NON COMPRISES)</bold><br/>
+                                Le contrat FNC, fournitures non comprises, prévoit le maintien en état de fonctionnement des blocs autonomes, tout remplacement de pièce (hors ampoules électriques) ou réparation étant aux frais du CLIENT.<br/>
+                                <br/><bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                A la charge du CLIENT : toutes les pièces détachées nécessaires à la remise en état des blocs détériorés par la suite de chocs, sinistres, malveillance, vols, vétusté, etc... type : accus, capots, circuits, étiquettes de signalisation, etc...<br/>
+                                Il en sera de même pour le remplacement éventuel des blocs autonomes hors service ; également les contraintes réglementaires existantes ou à venir telles que : réformes, etc...<br/>
+                                Le présent contrat exclut toute réparation éventuelle du réseau électrique de raccordement ainsi que du tableau électrique.<br/>
+                                <br/><bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre de blocs autonomes : <bold>{! LotsQuantity }</bold><br/>
+                                <br/><bold>ARTICLE 5 : DESCRIPTIF PRESTATIONS - GARANTIE</bold><br/>
+                                Le présent contrat se limite strictement à l'exécution des opérations suivantes sur les équipements énumérés (voir article 4) : mise en fonctionnement de l'installation pour vérification des batteries, vérification et remplacement éventuel des ampoules, vérification de la mise au repos par télécommande lorsqu'elle existe, nettoyage.<br/>
+                                Tout défaut de fonctionnement relevant de l'entretien ainsi que le remplacement des ampoules sont garantis tout au long de la période contractuelle sans frais supplémentaires.<br/>
+                                SAGEX n'assure son intervention et n'engage sa responsabilité que sur les prestations de maintenance décrites ci-dessus.<br/>
+                                PERIODICITE D'EXECUTION :<br/>
+                                - SAGEX effectuera une visite préventive annuelle systématique (vérification/essai)<br/>
+                                - des dépannages correctifs quel qu'en soit le nombre sur demande ponctuelle (qui donneront lieu à une facturation particulière complémentaire).<br/>
+                                <br/><bold>ARTICLE 6 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé (facturée après l'intervention) est, pour l'année en cours, de :<br/>
+                                <bold>Euros H.T. {! TotalPrice }</bold> (T.V.A. en sus)<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1360 }">
+                                <bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat annuel de vérification et de maintenance préventive des colonnes sèches dans les conditions ci-après et au verso fixées.
+                                De son côté, SAGEX s'engage à exécuter annuellement la vérification préventive et la mise en eau des équipements de sécurité incendie ci-dessous désignés (voir article 4) et à intervenir ponctuellement sur site dans les 72 heures ouvrées pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installation (voir article 5).<br/>
+                                <div style="padding-top:8px"></div><bold>ARTICLE 2 : TYPE DE CONTRAT : FNC (FOURNITURES NON COMPRISES)</bold><br/>
+                                Le contrat FNC, fournitures non comprises, prévoit le maintien en état de fonctionnement des installations, tout remplacement de pièce ou réparation étant aux frais du CLIENT.<br/>
+                                <div style="padding-top:8px"></div><bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                Seront à la charge du CLIENT : toutes les pièces détachées nécessaires à la remise en état des matériels détériorés par suite de chocs, sinistres, malveillance, vols, vétusté, etc... type : pièces mécaniques telles que bouchons, chaînettes, vannes de manoeuvre, joints d'étanchéité des prises, signalisation, etc...<br/>
+                                SAGEX, ne sera pas responsable des dégâts provoqués par fuite d'eau, rupture de colonne ou pièces et accessoires, infiltrations d'eau et d'une manière générale, tous dégâts corporels ou matériels occasionnés par la réalisation du ou des essais.<br/>
+                                Le présent contrat exclut toute réparation éventuelle sur le corps de la colonne, et les contraintes réglementaires à venir.<br/>
+                                <div style="padding-top:8px"></div><bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre de colonnes sèches : <bold>{! LotsQuantity }</bold><br/>
+                                <div style="padding-top:8px"></div><bold>ARTICLE 5 : DESCRIPTIF PRESTATIONS - GARANTIE</bold><br/>
+                                Le présent contrat se limite strictement à l'exécution des opéaration suivantes sur les équipement énumérés (voit article 4) :<br/>
+                                Vérification du libre accès aux raccords d'alimentation et aux prises d'incendie,<br/>
+                                Vérification du bon état général de l'installation et du bon fonctionnement de la robinetterie,<br/>
+                                Vérification de la présence de la signalisation et des bouchons de fermeture ainsi que de leur état,<br/>
+                                Vérification de l'absence de corps étrangers aux raccords d'alimentation des colonnes et aux prises d'incendie.<br/>
+                                Essai hydrostatique pour vérification de l'étanchéité de la colonne.<br/>
+                                Vidange de la colonne.<br/>
+                                PERIODICITE D'EXECUTION :<br/>
+                                - SAGEX effectuera une visite préventive annuelle systématique ;<br/>
+                                - des dépannages correctifs (hors travaux de remise en état) quel qu'en soit le nombre sur demande ponctuelle donneront lieu à une facturation particulière complémentaire.<br/>
+                                <div style="padding-top:8px"></div><bold>ARTICLE 6 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé est, pour l'année en cours, de : 
+                                <bold>Euros H.T. {! TotalPrice }</bold> (T.V.A. en sus)<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1385 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Rappel des exigences liées aux périodicités et nature des vérifications définies par la norme NF S 61-759<br/>
+                                <padding25></padding25>1 contrôle visuel Trimestriel<br/>
+                                <padding25></padding25>1 contrôle hydrostatique annuel<br/>
+                                <padding25></padding25>1 contrôle hydrodynamique quinquennal<br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat de vérification et de maintenance préventive des colonnes sèches dans les conditions ci-après et au verso fixées.<br/><br/>
+                                <bold>ARTICLE 2 : DUREE DU CONTRAT</bold><br/>
+                                Le contrat est établi pour une durée de <bold>5 ans</bold>. Il peut être résilié par chacune des parties avec un préavis de 6 mois.<br/><br/>
+                                <bold>ARTICLE 3 : TYPE DE CONTRAT : FNC (FOURNITURES NON COMPRISES)</bold><br/>
+                                Le contrat FNC prévoit la vérification périodique et le maintien en fonctionnement des installations.<br/>
+                                Pour les opérations de vérification, la fourniture de l'eau est à la charge du client.<br/>
+                                Pour les opérations de remise en état (remplacement de pièce ou réparation), seront notamment à la charge du CLIENT : la main d'oeuvre nécessaire et les pièces détachées nécessaires à la remise en état des matériels détériorés par suite de chocs, sinistres, malveillance, vols, vétuste, etc. (pièces mécaniques telles que bouchons, chaînettes, vannes de manoeuvre, joints d'étanchéité des prises, signalisations, etc.).<br/>
+                                Le présent contrat exclut toute réparation évenutelle sur le corps de la colonne ou modification de la colonne afin de tenir compte d'évolutions réglementaires techniques et/ou normatives présentes ou à venir.<br/>
+                                SAGEX ne pourra être tenu responsable des dégêts provoqués par une tuile d'eau, une rupture de colonne ou de pièces et accessoires : infiltrations d'eau et d'une manière générale, pour tous dégâts matériels ou corporels occasionnels lors des essais.<br/><br/>
+                                <bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre de colonnes sèches : <bold>{! LotsQuantity }</bold><br/><br/>
+                                <bold>ARTICLE 5 : DESCRIPTIF DES PRESTATIONS</bold><br/>
+                                Sagex s'engage à effectuer sur le patrimoine défini à l'article 4 les vérifications décidées par le client.<br/>
+                                <padding25 style="font-weight:bold;padding-right:51px;">Contrôle visuel</padding25><bold>1 fois par an</bold> le Client réalisera lui-même les autres contrôles visuels - Sinon voir "Option" ci-dessous<br/>
+                                <padding25 style="font-weight:bold;padding-right:29px;">Essai Hydrostatique</padding25><bold>1 fois par an</bold><br/>
+                                <padding25 style="font-weight:bold;padding-right:15px;">Essai Hydrodynamique</padding25><bold>1 fois tous les 5 ans</bold><br/>
+                                L'essai hydrodynamique se substitue à l'essai hydrostatique l'année où il est réalisé.<br/>
+                                Sagex remet chaque année au Client un rapport d'essai hydraulique, et met à jour le Registre de Sécurité de l'immeuble.<br/>
+                                Le Client tient à disposition de Sagex le dossier technique de chaque colonne.<br/><br/>
+                                <bold>ARTICLE 6 : PRIME</bold><br/>
+                                La prime contractuelle du  patrimoine sus-nommé est, pour l'année en cours, de :<bold>{! TotalPrice } Euros H.T.</bold>(T.V.A. en sus)<br/><br/>
+                                <table>
+                                	<tr>
+                                    	<td  height="5" width="7" style="border: solid 2px black;"></td>
+                                    	<td style="line-height: 0.9; padding-left:5px;font-weight:bold;">
+                                            OPTION CONTROLE VISUEL TRIMESTRIEL SELON LA NORME NF S 61-759
+                                    	</td>
+                                	</tr>
+                            	</table>
+                                La prime annuelle contractuelle est alors de : <bold>800 € HT par colonne</bold> (TVA en sus)<br/><br/>
+                                Dans le cas où le Client ne valide pas cette option, il se déclare averti des exigences de la norme, de l'obligation de réaliser ces contrôles (cf article 1) et des oligtions de communication résultant des conclusions de ceux-ci.<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1450 }">
+                                <bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat annuel de vérification et de maintenance préventive du système d'obturation pare-flammes dans les conditions ci-après et au verson fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement la vérification préventive des équipements de sécurité incendie ci-dessous désignés (voir article 4) et à intervenir ponctuellement sur site dans les 72 heures ouvrées pour toute prestation corrective demandée par le CLOENT et justifiée par l'état de l'installation (voir article 5).<br/><br/>
+                                <bold>ARTICLE 2 : TYPE DE CONTRAT : FNC</bold><br/>
+                                Le contrat FNC, fournitures non comprises, prévoit le maintien en état de fonctionnement des installations, tout remplacement de pièce ou réparation étant aux frais du CLIENT.<br/><br/>
+                                <bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                Sera à la charge du CLIENT : toutes les pièces détachées nécessaires à la remise en état des matériels détériorés par suite de chics, sinistres, malveillance, vols, vétusté, etc...type : panneaux, rails, galets de roulement, chicanes, entrées de réception guides, poulies, contrepoids (s'il en existe), détecteurs, signalisation, etc...<br/>
+                                Le présent contrat exclut toute réparation éventuelle du réseau électrique de raccordement s'il y en a un, ainsi que du tableau électrique ; également les contraintes réglementaires existantes ou à venir telles que : réépreuves, réformes, etc...<br/><br/>
+                                <bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre de portes coupe-feu : <bold>{! LotsQuantity }</bold><br/><br/>
+                                <bold>ARTICLE 5 : DESCRIPTIF PRESTATIONS - GARANTIE</bold><br/>
+                                Le présent contrat se limite strictement à l'exécution des opérations de vérification préventives sur les équipements énumérés (voir article 4). SAGEX n'assure son intervention et n'engage sa responsabilité que sur les prestations de maintenance décrites dans le rapport de visite postérieur à l'intervention précisant l'étendue des différents postes contrôlés (tout acte non signifié dans ce rapport n'entre pas dans la garantie SAGEX), ainsi que les anomalies relevées.<br/>
+                                PERIODICITE D'EXECUTION :<br/>
+                                - SAGEX effectuera une visite préventive annuelle systématique ;<br/>
+                                - des dépannages correctifs quel qu'en soit le nombre sur demande ponctuelle (qui donneront lieu à une facturation particulière complémentaire).<br/><br/>
+                                <bold>ARTICLE 6 : PRIME</bold><br/>
+                                La prime <bold>annuelle</bold> et contractuelle du patrimoine sus-nommé est, pour l'année en cours, de : <bold>Euros H.T. {! TotalPrice }</bold> (T.V.A. en sus).<br/>
+                                Le nombre annuel de passages sera de : <bold>{!PassageFrequency}</bold><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1555 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat annuel de maintenance préventive des systèmes complets d'évacuation des fumées (à l'exclusion de système d'extraction s'il y en a) dans les conditions ci-après et au verso fixées. De son côté, SAGEX s'engage à exécuter annuellement la maintenance préventive des équipements de sécurité incendie ci-dessous désignés (voir article 4) et à intervenir ponctuellement sur site dans les 24 heures ouvrées pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installation (voir article 5).<br/><br/>
+                                <bold>ARTICLE 2 : TYPE DE CONTRAT : FNC</bold><br/>
+                                Le contrat FNC, fournitures non comprises, prévoit le maintien en état de fonctionnement des installations, tout remplacement de charge ou de pièce ou réparation étant aux frais du CLIENT.<br/><br/>
+                                <bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                Sera à la charge du CLIENT : toutes les pièces détachées nécessaires à la remises en état des matériels détériorés par suite de chocs, sinistres, malveillance, vols, vétusté, etc... type : pièces mécaniques ou électro-mécaniques telles câbles, axes, roulements, silent-blocs, bouches, vérins, détecteurs, bris de glace, treuils, verrous, ou acessoires de ceux-ci, signalisation, etc... Le présent contrat exclut toute réparation éventuelle du réseau électrique de raccordement s'il y en a, ainsi que du tableau électrique ; également les contraintes réglementaires existantes ou à venir telles que : réépreuves, réformes, etc...<br/><br/>
+                                <bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre de systèmes concernés : <bold>{! LotsQuantity }</bold><br/><br/>
+                                <bold>ARTICLE 5 : DESCRIPTIF PRESTATIONS - GARANTIE</bold><br/>
+                                Le présent contrat se limite strictement à l'exécution des opérations de maintenance préventve sur les équipements énumérés (voir article 4). SAGEX n'assure son intervention et n'engage sa responsabilité que sur les prestations de maintenance décrites dans le rapport de visite postérieur à l'intervention précisant l'étendue des différents postes contrôlés (tout acte non signifié dans ce rapport n'entre pas dans la garantie SAGEX), ainsi que les anomalies relevées.<br/>
+                                PERIODICITE D'EXECUTION :<br/>
+                                - SAGEX effectuera une visite préventive annuelle systématique ;<br/>
+                                - des dépannages correctifs quel qu'en soit le nombre sur demande ponctuelle (qui donneront lieu à une facturation particulière complémentaire).<br/><br/>
+                                <bold>ARTICLE 6 : PRIME</bold><br/>
+                                La prime <bold>annuelle</bold> et contractuelle du patrimoine sus-nommé est, pour l'année en cours, de : <bold>Euros H.T. {! TotalPrice }</bold> (T.V.A. en sus).<br/>
+                                Le nombre annuel de passages sera de : <bold>{!PassageFrequency}</bold><br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1652 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat annuel de maintenance préventive de fermeture de porte du système de sécurité incendie (stable au feu, pare-flammes ou coupe-feu) dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement la maintenance préventive des équipements de sécurité incendie ci-dessous désignés (voir article 4) et à intervenir ponctuellement sur site dans els 72 heures ouvrées pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installatiion (voir article 5).<br/><br/>
+                                <bold>ARTICLE 2 : TYPE DE CONTRAT : FNC</bold><br/>
+                                Le contrat FNC, fournitures non comprises, prévoit le maitien en état de fonctionnement des installations, tou remplacement de pièce ou réparation étant aux frais du CLIENT.<br/><br/>
+                                <bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                Sera à la charge du CLIENT : toutes les pièces détachées nécessaires à la remise en état des matériels détériorés par suite de chocs, sinistres, malveillance, vols, vétusté, etc...<br/>
+                                Il en sera de même pour le remplacement éventuel des ferme-portes hors service (ainsi que de toutes autres pièces mécaniques) ; également les contraintes réglementaires existantes ou à venir telles que : réformes, etc ...<br/><br/>
+                                <bold>ARTCILE 4 : PATRIMOINE</bold><br/>
+                                Nombre de ferme-portes : <bold>{! LotsQuantity }</bold><br/><br/>
+                                <bold>ARTICLE 5 : DESCRIPTIF PRESTATIONS - GARANTIE</bold><br/>
+                                Le présent contrat se limite strictement à l'exécution des opérations suivantes sur les équipements énumérés (voir article 4) : maintenance de la bonne fermeture des portes (contrôle des ferme-portes, charnières, gâches).<br/>
+                                SAGEX n'assure son intervention et n'engage sa responsabilité que sur les responsabilité que sur les prestations de maitenance décrites ci-dessus.<br/>
+                                PERIODICITE D'EXECUTION :<br/>
+                                - SAGEX effectuera une visite préventive annuelle systématique ;<br/>
+                                - des dépannages correctifs quel qu'en soit le nombre sur demande ponctuelle (qui donneront lieu à une facturation pacticulière complémentaire).<br/><br/>
+                                <bold>ARTCILE 6 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé est, pour l'année en cours, de <bold>Euros H.T. {! TotalPrice }</bold> (T.V.A. en sus).<br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1750 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire aurpès de SAGEX un contrat annuel de vérification et de maintenance préventive du système complet de détection et d'alarme incendie dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement la vérification préventive des équipements de sécurité incendie ci-dessous désignés (voir article 4) et à intervenir ponctuellement sur site dans les 72 heures ouvrées pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installation (voir article 5).<br/>
+                                Il est précisé que le délao de réparation dépendra des réceptions des pièces des fabricants. Pour la catégorie 1 adressable, un diagnostic de panne est obligatoirement réalisé par le fabricant.<br/><br/>
+                                <bold>ARTICLE 2 : TYPE DE CONTRAT : FNC</bold><br/>
+                                Le contrat FNC, fournitures non comprises, prévoit le maintien en état de fonctionnement des installations, tout remplacement de charge ou de pièce et réparation étant au frais du CLIENT.<br/><br/>
+                                <bold>ARTCILE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                Sera à la charge du CLIENT : toutes les pièces détachées nécessaires à la remise en état des matériels détériorés par suite de chocs, sinistres, malveillances, vols, vétusté, etc... type : détecteurs, bris de glace, sirène ou accessoires de ceux-ci, cartes de centrale, voyants, relais, batteries, piles, commutateurs, signalisation, etc...<br/>
+                                Le présent contrat exclut toute réparation éventuelle du réseau électrique de raccordement, ainsi que du tableau électrique ; également les contraintes réglementaires existantes ou à venir telles que : réépreuves, réformes, etc...<br/><br/>
+                                <bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                Nombre de système d'alarme : <bold>{! LotsQuantity }</bold><br/><br/>
+                                <bold>ARTICLE 5 : DESCRIPTIF PRESTATIONS - GARANTIE</bold><br/>
+                                Le présent contrat se limite strictement à l'exécution des opérations de vérification préventives sur les équipements énumérés (voir article 4).<br/>
+                                SAGEX n'assure son intervention et n'engage sa reponsabilité que sur les prestations de maintenance décrites dans le rapport de visite postérieur à l'intervention précisant l'étendue des différents postes contrôlés (tout acte non signifié dans ce rapoort n'entre pas dans la garantie SAGEX), ainsi que les anomalies relevées.<br/>
+                                PERIODICITE D'EXECUTION :<br/>
+                                - SAGEX effectuera une visite préventive annuelle systématique ;<br/>
+                                - des dépannages correctifs quelqu'en soit le nombre par demande ponctuelle (qui donneront lieu à une facturation particulière complémentaire)<br/><br/>
+                                <bold>ARTICLE 6 : PRIME</bold><br/>
+                                La prime <bold>annuelle</bold> et contractuelle du patrimoine sus-nommé est, pour l'année en cours, de : <bold>Euros H.T. {! TotalPrice }</bold> (T.V.A. en sus)<br/>
+                                Le nombre annuel de passages sera de :<bold>{!PassageFrequency}</bold><br/><br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1933 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès de SAGEX un contrat annuel de vérification et de maintenance préventive des extincteurs, de l'éclairage de sécurité par blocs autonomes et de fermeture de porte du système de sécurité incendie (stable au feu, pare-flammes ou coupe-feu) dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, SAGEX s'engage à exécuter annuellement la vérification préventve des équipements de sécurité incendie ci-dessous désignés (voir article 4) et à intervenir ponctuellement sur site dans les 48 heures ouvrées (et 72 heures pour les ferme-portes) pour toute prestation corrective demandée par le CLIENT et justifiée par l'état de l'installation.<br/><br/>
+                                <bold>ARTCILE 2 : TYPE DE CONTRAT : FNC (FOURNITURES NON COMPRISES)</bold><br/>
+                                Le contrat FNC, fournitures non comprises, prévoit le maintien en état de fonctionnement des installations, tout remplacement de charge ou de pièce (hors ampoules électriques) ou réparation étant aux frais du CLIENT.<br/><br/>
+                                <bold>ARTICLE 3 : CLAUSES RESTRICTIVES (liste non exhaustive)</bold><br/>
+                                Seront à la charge du CLIENT : toutes les pièces détachées nécessaires à la remise en état des matériels détériorés par suite de chocs, sinistres, malveillance, vols, vétusté, etc... type : accus, capots, circuits, étiquettes de signalisation, charges, recharges, etc... Il en sera de même pour le remplacement éventuel des appareils hors service ; également les contraintes réglementaires existantes ou à venir telles que : réépreuves, réformes, etc...<br/>
+                                Le présent contrat exclut toute réparation éventuelle du réseau électrique de raccordement ainsi que du tableau électrique.<br/><br/>
+                                <bold>ARTICLE 4 : PATRIMOINE</bold><br/>
+                                4.1 : Nombre de blocs autonomes : <bold>{!LotsQuantityOrderedByName[0]}</bold><br/>
+                                4.2 : Nombre de ferme-portes : <bold>{!LotsQuantityOrderedByName[2]}</bold><br/>
+                                4.3 : Nombre d'extincteurs : <bold>{!LotsQuantityOrderedByName[1]}</bold><br/><br/>
+                                <bold>ARTICLE 5 : DESCRIPTIF PRESTATIONS - GARANTIE</bold><br/>
+                                Le présent contrat se limite strictement à l'exécution des opérations suivantes sur les équipements énumérés :<br/>
+                                (voir article 4.1) : mise en fonctionnement de l'installation pour vérification des batteries, vérification et remplacement éventuel des ampoules, vérification de la mise au repos par télécommande lorsqu'elle existe, nettoyage. Tout défaut de fonctionnement relevant de l'entretien ainsi que le remplacement des ampoules sont garantis tout au long de la période contractuelle sans frais supplémentaires.<br/>
+                                (voir article 4.2) : vérification de la bonne fermeture des portes (contrôle et réglage des ferme-portes, charnières, gâches).<br/>
+                                (voir article 4.3) : vérification maintenance des appareils.<br/>
+                                SAGEX n'assure son intervention et n'engage sa responsabilité que sur les prestations de maintenance décrites ci-dessus.<br/>
+                                PERIODICITE D'EXECUTION :<br/>
+                                - SAGEX effectuera une visite de vérification préventive annuelle systématique des extincteurs, des ferme-portes et une visite préventive annuelle systématique (1 visite vérification/essai) de l'éclairage de sécurité<br/>
+                                - des dépannages correctifs quel qu'en soit le nombre sur demande ponctuelle (qui donneront lieu à une facturation particulière complémentaire).<br/><br/>
+                                <bold>ARTICLE 6 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé est, pour l'année en cours, de : <bold>Euros H.T. {! TotalPrice }</bold> (T.V.A. en sus)<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{! CodePresta==1120 }">
+                                <br/><bold>ARTICLE 1 : OBJET</bold><br/>
+                                Le CLIENT déclare souscrire auprès du prestataire un contrat  triennal de maintenance préventive et corrective, renouvelable par période triennale dans les conditions ci-après et au verso fixées.<br/>
+                                De son côté, le prestataire s'engage à exécuter annuellement les travaux de maintenance des équipements de sécurité́ incendie ci-dessous désignés (voir article 3) et à intervenir ponctuellement sur site dans les 48 heures ouvrées pour toute prestation corrective urgente demandée par le CLIENT, et notamment en cas de système hors service.<br/>
+                                Ce présent document répond aux exigences de la Norme NF S61-922 et les vérifications seront effectuées conformément aux exigences de la Norme NF S61-919.<br/>
+                                <bold>ARTCILE 2 : TYPE DE CONTRAT : P3TC (A L'EXCLUSION DU VOL TOUT COMPRIS), DESCRIPTIF DE LA MAINTENANCE ET CLAUSES RESTRICITIVES (liste non exhaustive)</bold><br/>
+                                Le contrat P3TC « Tout Compris », prévoit le maintien en état de fonctionnement de l’appareil lors de la maintenance annuelle ou sur demande ponctuelle du CLIENT. La facturation est établie à terme échoir.<br/>
+                                A charge du prestataire :<br/>
+                                <padding25 style="padding-right:25px;">-</padding25>Toute recharge ou remise en état quelqu’en soit l’origine (sauf le vol).<br/>
+                                <padding25 style="padding-right:25px;">-</padding25>Tout remplacement ou réforme par des appareils révisés, hors extincteurs sur roues et vol<br/>
+                                Ce contrat prévoit également, à titre gracieux, la vérification des bacs à sable (dès lors qu’il en existe).<br/>
+                                Cette prestation se décompose comme suit :<br/>
+                                <padding25 style="padding-right:25px;">-</padding25>Vérification visuelle et nettoyage du sable en surface (hors déchets de nature à porter atteinte à l’intégrité physique de nos techniciens)<br/>
+                                <padding25 style="padding-right:25px;">-</padding25>Vérification de la présence des accessoires (seau et/ou pelle). Les correctifs nécessaires feront l’objet d’un devis.<br/>
+                                A la charge du CLIENT : tout déplacement ou prestation au-delà̀ de 2 passages en sus de la maintenance compris dans la prime de maintenance contractuelle).<br/>
+                                De même, la fourniture d'appareils neufs ainsi que les déplacements, au tarif en vigueur des extincteurs ayant servi à maîtriser un incendie donnant lieu à une déclaration de sinistre auprès des assurances et les éventuelles reprises d’enduit de finition et de peinture consécutives aux travaux de remplacement.<br/>
+                                Le prestataire n'assure son intervention et n'engage sa responsabilité que sur les prestations de maintenance décrites dans le rapport de visite postérieur à l'intervention précisant l'étendue des différents postes contrôlés (tout acte non signifié dans ce rapport n'entre pas dans la garantie du prestataire), ainsi que les anomalies relevées.<br/>
+                                Périodicité d’exécution :<br/>
+                                <padding25 style="padding-right:25px;">-</padding25>Le prestataire effectuera une visite préventive annuelle systématique ;<br/>
+                                <bold>ARTICLE 3 : PATRIMOINE</bold><br/>
+                                Nombre d'appareils extincteurs : <bold>{! LotsQuantity }</bold><br/>
+                                En cas de méconnaissance du parc à vérifier, le relevé́ sera établi par le prestataire lors de la première visite de notre technicien.<br/>
+                                Par ailleurs, tout appareil présent non répertorié́ lors de la 1 ère visite ou manquant au regard de la règlementation en vigueur, accepté par le client suite devis et posé, sera automatiquement intégré́ à la prime contractuelle sans avenant complémentaire.<br/>
+                                <bold>ARTICLE 4 : PRIME</bold><br/>
+                                La prime annuelle et contractuelle du patrimoine sus-nommé (facturée en début de période) est, pour l'année en cours, de :<br/>
+                                <bold>Euros H.T. {!LotsPrice} + {!DeplacementPrice} déplacement forfaitaire annuel</bold> (T.V.A en sus)<br/>
+                                <bold>Frais de traitement des déchets : 5,90 €</bold><br/><br/>
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                </table>
+                 <apex:outputPanel rendered="{! CodePresta==29253}">
+                <table width="100%">
+                    <tr>
+                        <td style="{!PoliceSize}">
+                            
+                            <bold>Montant de la maintenance H. T. :</bold>  {! LotsPrice } + {!DeplacementPrice} déplacement forfaitaire annuel (T.V.A en sus)
+                            <br/><br/>
+                            
+                            
+                            <bold>DATE DE VALIDITE DE L'OFFRE : 3 mois</bold>
+
+                            <br/>
+                            
+                            
+                        </td>
+                    </tr>
+                </table>
+                    </apex:outputPanel>
+                 <apex:outputPanel rendered="{! CodePresta==29154 ||  CodePresta==29254}"> 
+                <table width="100%">
+                    <tr>
+                        <td style="{!PoliceSize}">
+                            
+<bold>Montant total :</bold>  {! LotsPrice }  Euros H.T. + {!DeplacementPrice} déplacement forfaitaire annuel (T.V.A en sus)
+                            <br/> <br/>
+                          
+                        
+           
+                            Le Client ou son représentant légal, le cas échéant, doit s’assurer que le Prestataire aura un accès aux locaux afin de pouvoir assurer sa prestation et autorise expressément le Prestataire à utiliser tout passe universel lui permettant d’accéder au(x) lieu(x) visé(s).<br/><br/>
+                            <table>
+                                <tr>
+                                    <td  height="5" width="7" style="border: solid 2px black;"></td>
+                                    <td style="line-height: 0.9; padding-left:5px;">
+                                        * Je renonce expressément à l’exercice du droit de rétraction dont je bénéficie en vertu de l’article L 121-21 du Code de la Consommation.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="line-height: 0.9;padding-left:20px ">* merci de cocher cette case, à défaut nous respecterons un délai minimum de 14 jours pour exécuter votre commande<br/><br/></td>
+                                </tr>
+                            </table>
+                                  <table>
+                                <tr>
+                                    <td  height="5" width="7" style="border: solid 2px black;"></td>
+                                    <td style="line-height: 0.9; padding-left:5px;">
+                                        *Je refuse la maintenance corrective des équipements de sécurité incendie lors de la maintenance et je reconnais mon entière responsabilité en cas         </td>
+                                </tr>
+                                      <tr>
+                                    <td colspan="2" style="line-height: 0.9;padding-left:20px ">de non-conformité sur un site.<br/><br/></td>
+                                </tr>
+                                Je reconnais avoir pris connaissance des conditions générales ci-jointes. 
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                </apex:outputPanel>
+                 <apex:outputPanel rendered="{! CodePresta==29366 || CodePresta==29552 || CodePresta==29130 || CodePresta==29453 || CodePresta==29052 || CodePresta==29068 ||CodePresta==29110||CodePresta==29206}">
+                <table width="100%">
+                    <tr>
+                        <td style="{!PoliceSize}">
+                            
+<bold>Montant total :</bold>  {! LotsPrice }  Euros H.T.+ {!DeplacementPrice} déplacement forfaitaire annuel (T.V.A en sus)
+                            <br/> <br/>
+                            
+                            
+                            Le Client ou son représentant légal, le cas échéant, doit s’assurer que le Prestataire aura un accès aux locaux afin de pouvoir assurer sa prestation et autorise expressément le Prestataire à utiliser tout passe universel lui permettant d’accéder au(x) lieu(x) visé(s).<br/><br/>
+                            <table>
+                                <tr>
+                                    <td  height="5" width="7" style="border: solid 2px black;"></td>
+                                    <td style="line-height: 0.9; padding-left:5px;">
+                                        * Je renonce expressément à l’exercice du droit de rétraction dont je bénéficie en vertu de l’article L 121-21 du Code de la Consommation.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="line-height: 0.9;padding-left:20px ">* merci de cocher cette case, à défaut nous respecterons un délai minimum de 14 jours pour exécuter votre commande<br/><br/></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                    </apex:outputPanel> 
+                 <apex:outputPanel rendered="{! CodePresta!=29366 && CodePresta!=29552 && CodePresta!=29130 && CodePresta!=29453 && CodePresta!=29253 && CodePresta!=29052 && CodePresta!=29068 && CodePresta!=29110 && CodePresta!=29154 && CodePresta!=29206 &&  CodePresta!=29254}">
+                <table width="100%">
+                    <tr>
+                        <td style="{!PoliceSize}">
+                            
+                            MOIS PREVISIONNEL DE MAINTENANCE :<apex:outputPanel rendered="{! codePresta ==1750 || codePresta==850 || codePresta==1360 || codePresta==1385 ||codePresta==1933||codePresta==1652||codePresta==1120||codePresta==1555||codePresta==1450||codePresta==750||codePresta==950||codePresta==1150 || codePresta==1130 || codePresta==1122}"> <bold>A01</bold></apex:outputPanel><br/><br/>
+                            Le Client ou son représentant légal, le cas échéant, doit s’assurer que le Prestataire aura un accès aux locaux afin de pouvoir assurer sa prestation et autorise expressément le Prestataire à utiliser tout passe universel lui permettant d’accéder au(x) lieu(x) visé(s).<br/><br/>
+                            <table>
+                                <tr>
+                                    <td  height="5" width="7" style="border: solid 2px black;"></td>
+                                    <td style="line-height: 0.9; padding-left:5px;">
+                                        * Je renonce expressément à l’exercice du droit de rétraction dont je bénéficie en vertu de l’article L 121-21 du Code de la Consommation.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="line-height: 0.9;padding-left:20px ">* merci de cocher cette case, à défaut nous respecterons un délai minimum de 14 jours pour exécuter votre commande<br/><br/></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                    </apex:outputPanel> 
+                <apex:outputText style="{!PoliceSize}"  escape="false" value="{! IF(  CodePresta==29366 || CodePresta==29552 || CodePresta==29130 || CodePresta==29453 || CodePresta==29253 || CodePresta==29052|| CodePresta==29068 || CodePresta==29110||CodePresta==29206,'Je reconnais avoir pris connaissance des conditions générales ci-jointes.<br/>','') }"></apex:outputText>
+                <table style="{!PoliceSize}">
+                    <tr>
+                        <td valign="top" style="width:40%">
+                            Le représentant du "Client",<br/>
+                            Accepté le :<br/>
+                            <apex:outputText escape="false" value="{! IF(  CodePresta==29253 || CodePresta==29052|| CodePresta==29068 || CodePresta==29110|| CodePresta==29154||CodePresta==29206||CodePresta==29254,'Date de prise d&#039effet du contrat :<br/>','') }"></apex:outputText>
+                            
+                            Cachet et nom du signataire :<br/>
+                            <apex:outputText value="{! IF(  CodePresta==29253 || CodePresta==29052|| CodePresta==29068 || CodePresta==29110|| CodePresta==29154||CodePresta==29206||CodePresta==29254,'Lu et approuvé aux conditions particulières ci-dessus.','Lu et approuvé aux conditions générales précisées au verso.') }"></apex:outputText>
+                            
+                        </td>
+                        <td valign="top" style="width:15%;">
+                            
+                            La société  <apex:outputText value="{! IF(  CodePresta==29366 || CodePresta==29552 || CodePresta==29130 || CodePresta==29453 || CodePresta==29253 || CodePresta==29052|| CodePresta==29068 || CodePresta==29110|| CodePresta==29154||CodePresta==29206||CodePresta==29254,' BOUVIER',' SAGEX') }"></apex:outputText>,<br/>
+                            <div style="padding-left:45px"></div>Proposition du : {! DAY(TODAY()) }/{! MONTH(TODAY()) }/{! YEAR(TODAY()) }<br/>
+                            <div style="padding-left:45px"></div>Nom du signataire :
+                        </td>
+                        
+                        
+                            <td valign="bottom" style="width:20%;">
+                                <apex:outputPanel rendered="{! CodePresta!=29366 && CodePresta!=29552 && CodePresta!=29130 && CodePresta!=29453 && CodePresta!=29253 && CodePresta!=29052 && CodePresta!=29068 && CodePresta!=29110 && CodePresta!=29154 && CodePresta!=29206 && CodePresta!=29254}">
+                                    <apex:image style="width:100%" id="tamponSagex" url="{!$Resource.Tampon_BSI}" alt="Tampon Signé" />
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{! CodePresta==29366 || CodePresta==29552 || CodePresta==29130 || CodePresta==29253 || CodePresta==29052 || CodePresta==29068 ||CodePresta==29110 || CodePresta==29154 ||CodePresta==29206|| CodePresta==29254 }">
+                            <apex:image style="width:100%" id="tamponSagex2" url="{!$Resource.Tampon_BSI}" alt="Tampon Signé" />
+                                </apex:outputPanel>
+                                </td>
+                      
+                    </tr>
+                </table>
+                <table width="100%" class="bottom-center-div">
+                    <tr>
+                        <td align="center;">
+                            <apex:outputPanel rendered="{! CodePresta!=29366 && CodePresta!=29552 && CodePresta!=29130 && CodePresta!=29453 && CodePresta!=29253 && CodePresta!=29052 && CodePresta!=29068 && CodePresta!=29110 && CodePresta!=29154 && CodePresta!=29206 && CodePresta!=29254}">
+                                    <apex:image style="width:100%" id="footerIncendie" url="{!$Resource.Footer_Sagex}" alt="Pôle Logo" />
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{! CodePresta==29366 || CodePresta==29552 || CodePresta==29130 || CodePresta==29253 || CodePresta==29052 || CodePresta==29068 ||CodePresta==29110 || CodePresta==29154 ||CodePresta==29206|| CodePresta==29254 }">
+                            <apex:image style="width:100%" id="footerIncendie2" url="{!$Resource.Footer_BSI}" alt="Pôle Logo" />
+                                </apex:outputPanel>
+                        </td>
+                    </tr>
+                </table>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        </div>
+        <bold align="center">Informations contrat</bold>
+        <br/><br/>N° site : <apex:outputLabel value="{!IF(devisInfos.size>4, DevisInfos[4],'')}" /><br/>
+        N° contrat SF : {! PrestaProposition }<br/>
+        Ref client : {! DevisInfos[0] }<br/><br/><br/>
+        <bold align="center">Liste des paramètres de lots de ce contrat</bold>
+        <br/><br/><apex:outputText value="{!LotsAsString}" escape="false"/><br/><br/>
+        <bold align="center">Coefficients</bold>
+        <br/><br/><apex:outputText value="{!CoefAsString}" escape="false"/>
+        <br/><apex:outputText value="{!DepCoefAsString}" escape="false"/>
+    </body>
+</apex:page>

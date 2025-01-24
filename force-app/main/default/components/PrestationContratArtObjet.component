@@ -1,0 +1,53 @@
+<apex:component >
+    <apex:attribute name="ArticleNumber" description="Number of the arctive Objet (1 in most case, 3 when context is on)"
+        type="Integer" required="true" />
+    <apex:attribute name="LegalText" description="Add legal text at the beginning of the article"
+        type="String" />
+    <apex:attribute name="Prestataire" description="DEP or 01 CONTRÔLE"
+        type="String" required="true" />
+    <apex:attribute name="ContractTitle" description="Title of the contract"
+        type="String" required="true" />
+    
+    
+    {! ArticleNumber } - <span class="art_title">OBJET</span><br />
+    <div style="padding-top: 5px; ">
+         <apex:outputPanel rendered="{! LegalText == 'Installations électriques' }">
+            <div style="padding-bottom: 5px">
+                
+            	Dans le cadre de : <br />
+                <ul>
+                    <li>Circulaire DGT 2012/12 du 9 octobre 2012 relative à la prévention des risques électriques</li>
+                    <li>Article R. 4226-16 du décret 2010-1016 du 30 Août 2010 relatif aux obligations de l'employeur pour l'utilisation des installations électriques des lieux de travail</li>
+                    <li>Article 8 de l'arrêté 2013-00789 du 15 juillet 2013 (uniquement pour les établissements de la ville de Paris)</li>
+                    <li>Arrêté du 26 Décembre 2011 relatif aux vérifications ou processus de vérification des installations électriques ainsi qu'au contenu des rapports correspondants</li>
+                </ul>
+             </div>
+             Le
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! LegalText == 'Amiante' }">
+            <div style="padding-bottom: 5px">
+                
+            	Dans le cadre : <br />
+                <ul>
+                            
+                    <li> du code de la Santé Publique,</li>
+                    <li> du décret 2011-629, </li>
+                    <li> de l'arrêté du 12 décembre 2012 relatif aux critères d'évaluation de l'état de conservation des matériaux et produits de la liste A contenant de l'amiante et au contenu du rapport de repérage, </li>
+                    <li> de l'arrêté du 12 décembre 2012 relatif aux critères d'évaluation de l'état de conservation des matériaux et produits de la liste B contenant de l'amiante et au contenu du rapport de repérage, </li>
+                    <li> de l'arrêté du 21 décembre 2012 relatif aux recommandations générales de sécurité et au contenu de la fiche récapitulative du Dossier Technique Amiante</li>
+                </ul>
+                {! Prestataire } effectue la surveillance de l'état de dégradation des matériaux amiantés. 
+                
+            </div>
+            <br />Le
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! LegalText == 'Règlement Sanitaire' }">
+            Afin de répondre aux contraintes du règlement sanitaire, le
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{! LegalText == NULL }">
+            Le 
+        </apex:outputPanel>
+             "Client" déclare souscrire auprès de "{! Prestataire }" un contrat "{! ContractTitle }" dans les conditions ci-après fixées.
+    </div>
+    
+</apex:component>

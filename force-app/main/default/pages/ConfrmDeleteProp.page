@@ -1,0 +1,6 @@
+<apex:page standardController="BS_Devis_from_Lead__c" extensions="deletePropositionExt">
+  <apex:form style="text-align: center;">
+      Êtes-vous sûr de vouloir supprimer&nbsp; <apex:outputText value="{!propName}"></apex:outputText>&nbsp; ?<br />
+    <apex:commandButton action="{!DeletePropAfterConfirm}" value="Oui" id="deleteButton"/> &nbsp;&nbsp; <apex:outputLink value="/{! propId }">Annuler</apex:outputLink>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,51 @@
+<apex:component >
+    <div style='margin-bottom: 15px;'>
+     VOLT'AIR prend à sa charge les prestations prévues à l’article II de l’ensemble des installations prévues à l’article III pour
+        l’établissement désigné par le présent contrat.
+    </div>
+    	<table class="art4_array" width="100%" valign="top">
+            <tr>
+                <td valign="top"><b>POMPAGE</b></td>
+                <td>
+                    - Vérification des données administratives du contrat<br />
+                    - Vidage de la fosse<br />
+                    - Nettoyage du fond de fosse<br />
+                    - Mise en décharge et retraitement des produits extraits <br />
+                </td>
+            </tr>
+            <tr>
+                <td valign="top"><b>ENTRETIEN DE POMPE</b></td>
+                <td>
+                    - Vérification des données administratives du contrat<br />
+                    - 1er entretien à la prise de contrat :<br />
+                    o Dépose des pompes pour contrôle de l’état général et signalement des anomalies constatées<br />
+                    - Visite d’entretien annuelle :<br />
+                    o Nettoyage de la pompe,<br />
+                    o Nettoyage de la crépine,<br />
+                    o Vérification du régulateur de mise en route,<br />
+                    o Vérification du report alarme si existant,<br />
+                    o Vérification des connexions électriques et resserrage,<br />
+                    o Vérification des ampoules témoins<br /><br />
+                    <b>Le contrat ne comprend pas :</b><br /><br />
+                    - Le remplacement de tout organe ou accessoire qui seraient reconnus devenus hors d’usage pour assurer le bon fonctionnement normal de l’installation.<br />
+                    - Le retour en atelier.<br />
+                    - La remise en état.<br />
+                    - La mise en place d’une pompe de secours.<br />
+                    - Les déplacements autres que les visites prévues au présent contrat.<br />
+                    - Toute intervention dans les installations sanitaires ou électriques extérieures à l’installation propre au poste de relevage.<br />
+                    - La dépense d’eau et d’électricité nécessitée par les vidanges et essais.<br />
+                    - Le pompage des boues.<br />
+                </td>
+            </tr>
+            <tr>
+                <td valign="top"><b>INSPECTION VIDEO</b></td>
+                <td> 
+                    - Inspection télévisée.<br />
+                    - Mise à disposition d’une cureuse pour l’inspection télévisée dans la cave si prévu à l’Art.III.<br />
+                    - Fourniture d’un rapport avec photos et vidéo.<br /><br />
+                    <b>NOTA :</b> cette proposition a été établie sous réserve d’accès en toute sécurité aux évents des canalisations. Seul le technicien VOLT'AIR sera en mesure de juger de la faisabilité de cette intervention.<br />
+                    La prestation ne comprend pas la remise en état des tampons qui seraient détériorés du fait de leur vétusté, lors du démontage. Ce travail pourrait être alors réalisé par notre service plomberie. Lors de nos interventions, nous ne seront pas tenus pour responsable des bris de canalisations en raison de leur état de vétusté.<br />
+                </td>
+            </tr>
+    </table>
+</apex:component>

@@ -1,0 +1,8 @@
+<apex:page standardController="Prestation__c" extensions="savePrestationContratPDF" lightningStylesheets="true" >
+    Votre document PDF a bien été ajouté aux fichiers associés de l'enregistrement.
+    <apex:form >
+        <apex:outputLink value="/{! contratId }">
+  				Revenir au contrat
+        </apex:outputLink>
+    </apex:form>
+</apex:page>
